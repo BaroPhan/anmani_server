@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-// import { EnvironmentVariablesValidator } from 'src/config/database.config';
+import { DatabaseVariables } from 'src/config/database.config';
 // import { AllConfigType } from 'src/config/config.type';
 
 @Injectable()
@@ -9,53 +9,28 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   constructor(private readonly configService: ConfigService) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
-    const databaseConfig = this.configService.getOrThrow('database', {
+    const {
+      DATABASE_TYPE,
+      DATABASE_HOST,
+      DATABASE_PORT,
+      DATABASE_USERNAME,
+      DATABASE_PASSWORD,
+      DATABASE_NAME,
+      DATABASE_SYNCHRONIZE,
+    }: DatabaseVariables = this.configService.getOrThrow('database', {
       infer: true,
     });
     return {
-      type: databaseConfig,
-      // url: this.configService.get('database.url', { infer: true }),
-      // host: this.configService.get('database.host', { infer: true }),
-      // port: this.configService.get('database.port', { infer: true }),
-      // username: this.configService.get('database.username', { infer: true }),
-      // password: this.configService.get('database.password', { infer: true }),
-      // database: this.configService.get('database.name', { infer: true }),
-      // synchronize: this.configService.get('database.synchronize', {
-      //     infer: true,
-      // }),
-      // dropSchema: false,
-      // keepConnectionAlive: true,
-      // logging:
-      //     this.configService.get('app.nodeEnv', { infer: true }) !== 'production',
-      // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      // migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-      // cli: {
-      //     entitiesDir: 'src',
-      //     migrationsDir: 'src/database/migrations',
-      //     subscribersDir: 'subscriber',
-      // },
-      // extra: {
-      //     // based on https://node-postgres.com/apis/pool
-      //     // max connection pool size
-      //     max: this.configService.get('database.maxConnections', { infer: true }),
-      //     ssl: this.configService.get('database.sslEnabled', { infer: true })
-      //         ? {
-      //             rejectUnauthorized: this.configService.get(
-      //                 'database.rejectUnauthorized',
-      //                 { infer: true },
-      //             ),
-      //             ca:
-      //                 this.configService.get('database.ca', { infer: true }) ??
-      //                 undefined,
-      //             key:
-      //                 this.configService.get('database.key', { infer: true }) ??
-      //                 undefined,
-      //             cert:
-      //                 this.configService.get('database.cert', { infer: true }) ??
-      //                 undefined,
-      //         }
-      //         : undefined,
-      // },
+      type: DATABASE_TYPE,
+      host: DATABASE_HOST,
+      port: DATABASE_PORT,
+      username: DATABASE_USERNAME,
+      password: DATABASE_PASSWORD,
+      database: DATABASE_NAME,
+      synchronize: DATABASE_SYNCHRONIZE,
+      keepConnectionAlive: true,
+      entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
+      migrations: [`${__dirname}/migrations/**/*{.ts,.js}`],
     } as TypeOrmModuleOptions;
   }
 }

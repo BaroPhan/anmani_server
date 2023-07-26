@@ -3,24 +3,7 @@ import { registerAs } from '@nestjs/config';
 import { Expose, Transform } from 'class-transformer';
 import { IsBoolean, IsInt, IsString } from 'class-validator';
 
-// type DatabaseConfigType = {
-//     url?: string;
-//     type?: string;
-//     host?: string;
-//     port?: number;
-//     password?: string;
-//     name?: string;
-//     username?: string;
-//     synchronize?: boolean;
-//     maxConnections: number;
-//     sslEnabled?: boolean;
-//     rejectUnauthorized?: boolean;
-//     ca?: string;
-//     key?: string;
-//     cert?: string;
-// };
-
-export class EnvironmentVariablesValidator {
+export class DatabaseVariables {
   @Expose()
   @IsString()
   DATABASE_TYPE: string;
@@ -52,12 +35,13 @@ export class EnvironmentVariablesValidator {
   DATABASE_SYNCHRONIZE: boolean;
 }
 
-class DatabaseConfig extends EnvironmentConfig<EnvironmentVariablesValidator> {
+class DatabaseConfig extends EnvironmentConfig<DatabaseVariables> {
   constructor() {
-    super(EnvironmentVariablesValidator);
+    super(DatabaseVariables);
   }
 }
+
 const configName = 'database';
-export default registerAs<EnvironmentVariablesValidator>(configName, () =>
+export default registerAs<DatabaseVariables>(configName, () =>
   new DatabaseConfig().getConfiguration(),
 );
