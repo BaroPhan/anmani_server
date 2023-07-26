@@ -1,0 +1,80 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "env": {
+    "node": true,
+    "es2021": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-base",
+    "prettier"
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {},
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "rules": {
+    "max-len": "off",
+    "require-jsdoc": "off",
+    "guard-for-in": "off",
+    "no-await-in-loop": "off",
+    "no-underscore-dangle": "off",
+    "no-restricted-syntax": "off",
+    "no-use-before-define": "off",
+    "consistent-return": "off",
+    "radix": ["error", "as-needed"],
+    "no-param-reassign": ["error", { "props": false }],
+    "camelcase": "off",
+    "array-callback-return": "off",
+    "prefer-destructuring": "off",
+    "no-unsafe-optional-chaining": "off",
+    "import/extensions": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_" }
+    ],
+    "@typescript-eslint/ban-types": "off",
+    "new-cap": "off",
+    "import/no-extraneous-dependencies": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "func-names": "off",
+    "import/no-unresolved": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "import/prefer-default-export": "off",
+    "arrow-body-style": "off",
+    "import/no-duplicates": "off",
+    "import/order": "off",
+    "import/no-self-import": "off",
+    "import/no-cycle": "off",
+    "import/no-relative-packages": "off",
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off",
+    "import/named": "off",
+    "import/no-useless-path-segments": "off",
+    "no-shadow": "off",
+    "class-methods-use-this": "off",
+    "no-empty-function": "off",
+    "no-useless-constructor": "off",
+    "max-classes-per-file": ["error", { "ignoreExpressions": true, "max": 5 }],
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+  }
+}
+// explain for 'jest:true' above: because the "it" keyword will be slapped by eslint as not defined function (no-undef), meanwhile the jest test will automatic collect the "*.test" file and run the "it" function (further: https://stackoverflow.com/questions/56398742/eslint-throws-no-undef-errors-when-linting-jest-test-files)
