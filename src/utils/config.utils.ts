@@ -17,7 +17,6 @@ export class EnvironmentConfig<T extends object> {
         excludeExtraneousValues: true,
       },
     );
-
     const errors = validateSync(validatedConfig, {
       skipMissingProperties: false,
       validationError: {

@@ -1,7 +1,8 @@
-import { EnvironmentConfig } from './../utils/config.utils';
+import { EnvironmentConfig } from '../../utils/config.utils';
 import { registerAs } from '@nestjs/config';
 import { Expose, Transform } from 'class-transformer';
 import { IsBoolean, IsInt, IsString } from 'class-validator';
+import { ConfigName } from '../config.constants';
 
 export class DatabaseVariables {
   @Expose()
@@ -31,7 +32,9 @@ export class DatabaseVariables {
 
   @Expose()
   @IsBoolean()
-  @Transform(({ value }) => value === 'true')
+  @Transform((value) => {
+    return value.obj[value.key] === 'true';
+  })
   DATABASE_SYNCHRONIZE: boolean;
 }
 
@@ -41,7 +44,6 @@ class DatabaseConfig extends EnvironmentConfig<DatabaseVariables> {
   }
 }
 
-const configName = 'database';
-export default registerAs<DatabaseVariables>(configName, () =>
+export default registerAs<DatabaseVariables>(ConfigName.DATABASE, () =>
   new DatabaseConfig().getConfiguration(),
 );

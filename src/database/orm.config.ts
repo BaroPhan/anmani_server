@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { DatabaseVariables } from 'src/config/database.config';
-// import { AllConfigType } from 'src/config/config.type';
+import { ConfigName } from 'src/config/config.constants';
+import { DatabaseVariables } from 'src/config/configs/database.config';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -17,9 +17,10 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       DATABASE_PASSWORD,
       DATABASE_NAME,
       DATABASE_SYNCHRONIZE,
-    }: DatabaseVariables = this.configService.getOrThrow('database', {
+    }: DatabaseVariables = this.configService.getOrThrow(ConfigName.DATABASE, {
       infer: true,
     });
+
     return {
       type: DATABASE_TYPE,
       host: DATABASE_HOST,
@@ -29,6 +30,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       database: DATABASE_NAME,
       synchronize: DATABASE_SYNCHRONIZE,
       keepConnectionAlive: true,
+      autoLoadEntities: true,
       entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
       migrations: [`${__dirname}/migrations/**/*{.ts,.js}`],
     } as TypeOrmModuleOptions;
