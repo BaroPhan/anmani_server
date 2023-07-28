@@ -4,12 +4,16 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { ValidationArguments } from 'class-validator/types/validation/ValidationArguments';
 import { Injectable } from '@nestjs/common';
 import { BaseValidator } from 'src/utils/base/base.validation.utils';
+import { Helper } from 'src/utils/helper.utils';
 
 @Injectable()
 @ValidatorConstraint({ name: 'IsExist', async: true })
 export class IsExist extends BaseValidator {
-  constructor(@InjectDataSource() private dataSource: DataSource) {
-    super();
+  constructor(
+    @InjectDataSource() private dataSource: DataSource,
+    protected helper: Helper,
+  ) {
+    super(helper);
   }
 
   async validate(

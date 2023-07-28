@@ -2,11 +2,13 @@ import { ValidatorConstraintInterface, isUUID } from 'class-validator';
 import { Repository } from 'typeorm';
 import { ValidationArguments } from 'class-validator/types/validation/ValidationArguments';
 import { Injectable } from '@nestjs/common';
-// import { Helper } from '../helper.utils';
+import { Helper } from '../helper.utils';
 
 @Injectable()
 export abstract class BaseValidator implements ValidatorConstraintInterface {
   message: string;
+
+  constructor(protected helper: Helper) {}
 
   checkPropertyType(value: string, type: string): boolean {
     switch (type) {
@@ -22,14 +24,14 @@ export abstract class BaseValidator implements ValidatorConstraintInterface {
     repository: Repository<T>,
     pathToProperty: string,
   ): string {
-    // const regex = this.helper.getRegex()
+    const regex = this.helper.getRegex();
     const metaData = repository.metadata;
     const propertyType =
       metaData.findColumnWithPropertyName(pathToProperty)?.type;
     if (propertyType instanceof Function)
       return Function.prototype.toString
         .call(propertyType)
-        .match(/^function\s*([^\s(]+)/)[1]
+        .match(regex.functionName)[1]
         .toLowerCase();
     return propertyType;
   }
