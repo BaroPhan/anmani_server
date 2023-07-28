@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, Validate } from 'class-validator';
 import { Role } from 'src/roles/entities/role.entity';
-import { IsExist } from 'src/utils/validation.utils';
+import { IsExist } from 'src/validation/properties.validation';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -19,8 +19,6 @@ export class CreateUserDto {
 
   @ApiProperty({ type: Role })
   @IsNotEmpty()
-  @Validate(IsExist, ['Role', 'id'], {
-    message: 'roleNotExists',
-  })
+  @Validate(IsExist, ['Role', 'id'])
   role: Role;
 }

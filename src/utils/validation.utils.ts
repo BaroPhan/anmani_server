@@ -1,34 +1,56 @@
-import {
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-} from 'class-validator';
-import { DataSource } from 'typeorm';
-import { InjectDataSource } from '@nestjs/typeorm';
+import { ValidatorConstraintInterface, isUUID } from 'class-validator';
+import { Repository } from 'typeorm';
 import { ValidationArguments } from 'class-validator/types/validation/ValidationArguments';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-@ValidatorConstraint({ name: 'IsExist', async: true })
-export class IsExist implements ValidatorConstraintInterface {
-  constructor(
-    @InjectDataSource()
-    private dataSource: DataSource,
-  ) {}
+export abstract class BaseValidator implements ValidatorConstraintInterface {
+  message: string;
 
-  async validate(value: string, validationArguments: ValidationArguments) {
-    if (!value) return false;
-    const repository = validationArguments.constraints[0];
-    const pathToProperty = validationArguments.constraints[1];
-    const entity: unknown = await this.dataSource
-      .getRepository(repository)
-      .findOne({
-        where: {
-          [pathToProperty || validationArguments.property]: pathToProperty
-            ? value?.[pathToProperty]
-            : value,
-        },
-      });
+  checkPropertyType(value: string, type: string): boolean {
+    switch (type) {
+      case 'uuid':
+        return isUUID(value, 4);
+      default:
+        // eslint-disable-next-line valid-typeof
+        return typeof value === type;
+    }
+  }
 
-    return Boolean(entity);
+  getPropertyType<T>(
+    repository: Repository<T>,
+    pathToProperty: string,
+  ): string {
+    const metaData = repository.metadata;
+    const propertyType =
+      metaData.findColumnWithPropertyName(pathToProperty)?.type;
+    if (propertyType instanceof Function)
+      return Function.prototype.toString
+        .call(propertyType)
+        .match(/^function\s*([^\s(]+)/)[1]
+        .toLowerCase();
+    return propertyType;
+  }
+
+  async getEntity<T>(
+    value: string,
+    repository: Repository<T>,
+    pathToProperty: string,
+    validationArguments: ValidationArguments,
+  ) {
+    return repository.findOne({
+      where: {
+        [pathToProperty || validationArguments.property]: value,
+      },
+    } as T);
+  }
+
+  abstract validate(
+    value: string,
+    validationArguments: ValidationArguments,
+  ): Promise<boolean>;
+
+  defaultMessage(): string {
+    return this.message;
   }
 }

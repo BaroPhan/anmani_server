@@ -5,7 +5,8 @@ import { ValidatedConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
-import { ValidationModule } from './utils/validation.module';
+import { UtilsModule } from './utils/utils.module';
+import { ValidationModule } from './validation/validation.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ValidationModule } from './utils/validation.module';
     DatabaseModule,
     UsersModule,
     RolesModule,
+    UtilsModule,
     ValidationModule,
   ],
   controllers: [AppController],
