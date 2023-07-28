@@ -1,4 +1,4 @@
-import { EnvironmentConfig } from '../../utils/config.utils';
+import { BaseEnvironmentConfig } from '../../utils/base/base.config.utils';
 import { registerAs } from '@nestjs/config';
 import { Expose, Transform } from 'class-transformer';
 import { IsBoolean, IsInt, IsString } from 'class-validator';
@@ -38,7 +38,7 @@ export class DatabaseVariables {
   DATABASE_SYNCHRONIZE: boolean;
 }
 
-class DatabaseConfig extends EnvironmentConfig<DatabaseVariables> {
+class DatabaseConfig extends BaseEnvironmentConfig<DatabaseVariables> {
   constructor() {
     super(DatabaseVariables);
   }

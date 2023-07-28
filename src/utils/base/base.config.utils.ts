@@ -1,7 +1,7 @@
 import { plainToClass } from 'class-transformer';
 import { validateSync } from 'class-validator';
 
-export class EnvironmentConfig<T extends object> {
+export class BaseEnvironmentConfig<T extends object> {
   private readonly validatedConfig: T;
 
   constructor(private readonly environmentVariablesValidator: new () => T) {
