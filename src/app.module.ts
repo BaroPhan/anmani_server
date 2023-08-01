@@ -7,6 +7,10 @@ import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { UtilsModule } from './utils/utils.module';
 import { ValidationModule } from './validation/validation.module';
+import { ProductsModule } from './products/products.module';
+import { VouchersModule } from './vouchers/vouchers.module';
+import { CartsModule } from './carts/carts.module';
+import { VideosModule } from './videos/videos.module';
 
 @Module({
   imports: [
@@ -16,6 +20,10 @@ import { ValidationModule } from './validation/validation.module';
     RolesModule,
     UtilsModule,
     ValidationModule,
+    ProductsModule,
+    VouchersModule,
+    CartsModule,
+    VideosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

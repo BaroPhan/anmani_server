@@ -1,9 +1,15 @@
 export class Helper {
-  private readonly regex = {
+  static readonly regex: {
+    functionName: RegExp;
+    phoneNumber: RegExp;
+  } = {
     functionName: /^function\s*([^\s(]+)/,
+    phoneNumber: /^(?:(?:\+?84|0)(?: ?|-?)(?:\d(?: ?|-?)?){9})$/,
   };
 
-  getRegex() {
-    return this.regex;
+  capitalizeFirstLetter(text: string) {
+    return text.length === 0
+      ? text
+      : text.charAt(0).toUpperCase() + text.slice(1);
   }
 }

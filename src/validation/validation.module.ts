@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { IsExist } from './properties.validation';
+import { IsExistValidator } from './isExist.validation';
 import { UtilsModule } from 'src/utils/utils.module';
+import { IsUniqueValidator } from './isUnique.validation';
 
 @Module({
   imports: [UtilsModule],
-  providers: [IsExist],
-  exports: [IsExist],
+  providers: [IsExistValidator, IsUniqueValidator],
+  exports: [IsExistValidator, IsUniqueValidator],
 })
 export class ValidationModule {}

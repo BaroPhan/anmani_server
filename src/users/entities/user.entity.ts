@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { Role } from 'src/roles/entities/role.entity';
 import {
   BaseEntity,
@@ -14,6 +14,7 @@ import {
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
+  @Expose({ name: 'key' })
   id: string;
 
   @Column({ type: String })
@@ -25,6 +26,15 @@ export class User extends BaseEntity {
   @Column({ type: String })
   @Exclude({ toPlainOnly: true })
   password: string;
+
+  @Column({ type: String })
+  gender: string;
+
+  @Column({ type: String, unique: true })
+  phoneNumber: string;
+
+  @Column({ type: Date })
+  dateOfBirth: Date;
 
   @ManyToOne(() => Role, {
     eager: true,

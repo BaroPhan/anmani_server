@@ -1,14 +1,20 @@
-import { ValidatorConstraintInterface, isUUID } from 'class-validator';
-import { Repository } from 'typeorm';
+import {
+  ValidatorConstraintInterface,
+  isUUID,
+  registerDecorator,
+} from 'class-validator';
+import { DataSource, ObjectLiteral, Repository } from 'typeorm';
 import { ValidationArguments } from 'class-validator/types/validation/ValidationArguments';
 import { Injectable } from '@nestjs/common';
 import { Helper } from '../helper.utils';
+import { ClassConstructor } from 'class-transformer';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
 export abstract class BaseValidator implements ValidatorConstraintInterface {
   message: string;
 
-  constructor(protected helper: Helper) {}
+  constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   checkPropertyType(value: string, type: string): boolean {
     switch (type) {
@@ -20,11 +26,15 @@ export abstract class BaseValidator implements ValidatorConstraintInterface {
     }
   }
 
+  getRepository(repositoryName: string): Repository<ObjectLiteral> {
+    return this.dataSource.getRepository(repositoryName);
+  }
+
   getPropertyType<T>(
     repository: Repository<T>,
     pathToProperty: string,
   ): string {
-    const regex = this.helper.getRegex();
+    const regex = Helper.regex;
     const metaData = repository.metadata;
     const propertyType =
       metaData.findColumnWithPropertyName(pathToProperty)?.type;
@@ -56,5 +66,20 @@ export abstract class BaseValidator implements ValidatorConstraintInterface {
 
   defaultMessage(): string {
     return this.message;
+  }
+
+  static validator<T>(
+    entityClass: ClassConstructor<T>,
+    field: string,
+    validator: ClassConstructor<BaseValidator>,
+  ) {
+    return function (object: Record<string, any>, propertyName: string) {
+      registerDecorator({
+        target: object.constructor,
+        propertyName,
+        constraints: [entityClass, field],
+        validator,
+      });
+    };
   }
 }
