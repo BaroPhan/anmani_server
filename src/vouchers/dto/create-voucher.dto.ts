@@ -7,7 +7,6 @@ enum Option {
   AMOUNT = 'amount',
   PERCENTAGE = 'percentage',
 }
-
 export class CreateVoucherDto {
   @ApiProperty({ type: Product })
   @IsNotEmpty()

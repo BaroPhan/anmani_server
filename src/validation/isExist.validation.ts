@@ -4,11 +4,12 @@ import { Injectable } from '@nestjs/common';
 import { BaseValidator } from 'src/utils/base/base.validation.utils';
 import { BaseValidatorProperty } from 'src/config/config.constants';
 import { ClassConstructor } from 'class-transformer';
+import { Helper } from 'src/utils/helper.utils';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class IsExistValidator extends BaseValidator {
-  constructor(dataSource: DataSource) {
+  constructor(dataSource: DataSource, private readonly helper: Helper) {
     super(dataSource);
   }
 
@@ -22,29 +23,29 @@ export class IsExistValidator extends BaseValidator {
     value: string,
     validationArguments: ValidationArguments,
   ): Promise<boolean> {
-    if (!value) {
-      this.message = 'Value must be provided.';
-      return false;
-    }
     const [repositoryName, pathToProperty] = validationArguments.constraints;
     const repository = this.getRepository(repositoryName);
     const propertyType = this.getPropertyType(repository, pathToProperty);
 
-    if (!this.checkPropertyType(value, propertyType)) {
-      this.message = `Value should be of type ${propertyType}.`;
-      return false;
+    for (const elem of this.helper.toArr<string>(value)) {
+      if (!this.checkPropertyType(elem, propertyType)) {
+        this.message = `Value should be of type ${propertyType}.`;
+        return false;
+      }
+      const entity = await this.getEntity(
+        elem,
+        repository,
+        pathToProperty,
+        validationArguments,
+      );
+      if (!entity) {
+        this.message = `${repositoryName.name} not found with ${
+          pathToProperty || validationArguments.property
+        } = ${elem}.`;
+        return false;
+      }
     }
-
-    const entity = await this.getEntity(
-      value,
-      repository,
-      pathToProperty,
-      validationArguments,
-    );
-    this.message = `${repositoryName.name} not found with ${
-      pathToProperty || validationArguments.property
-    } = ${value}.`;
-    return !!entity;
+    return true;
   }
 
   static validator<T>(

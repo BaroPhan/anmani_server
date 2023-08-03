@@ -1,15 +1,14 @@
-import { Expose } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import {
+  AfterLoad,
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
+  In,
   OneToMany,
   PrimaryGeneratedColumn,
-  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -25,22 +24,20 @@ export class Video extends BaseEntity {
   @Column({ type: String })
   url: string;
 
-  @Column({ nullable: true })
-  parentId: string;
-
-  @ManyToOne(() => Video, { onDelete: 'CASCADE', nullable: true })
-  @JoinColumn({ name: 'parentId' })
-  parentVideo: Video;
-
-  @OneToMany(() => Video, (video) => video.parentVideo, {
-    cascade: true,
-    eager: true,
-  })
-  childrenVideos: Video[];
-
-  @RelationId((video: Video) => video.childrenVideos)
   @Column({ type: 'json', nullable: true })
+  @Exclude({ toClassOnly: true })
   stories: string[];
+
+  @OneToMany(() => Video, (video) => video.stories)
+  @Expose({ name: 'stories' })
+  children: Video[];
+
+  @AfterLoad()
+  async loadChildren(): Promise<void> {
+    if (this.stories && this.stories.length > 0) {
+      this.children = await Video.findBy({ id: In(this.stories) });
+    }
+  }
 
   @CreateDateColumn()
   createdAt: Date;

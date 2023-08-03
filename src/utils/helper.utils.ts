@@ -12,4 +12,8 @@ export class Helper {
       ? text
       : text.charAt(0).toUpperCase() + text.slice(1);
   }
+
+  toArr<T>(value: unknown): Array<T> {
+    return Array.isArray(value) ? value : [value];
+  }
 }

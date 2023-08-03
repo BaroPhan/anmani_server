@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsUrl } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  ArrayUnique,
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsUrl,
+} from 'class-validator';
 import { IsExist } from 'src/validation/isExist.validation';
 import { Video } from '../entities/video.entity';
 
@@ -13,13 +20,10 @@ export class CreateVideoDto {
   @IsUrl()
   url: string;
 
-  @ApiProperty()
   @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
   @IsExist(Video)
-  parentId: string;
-
-  @ApiProperty()
-  @IsOptional()
-  // @IsExist(Video)
   stories: string[];
 }

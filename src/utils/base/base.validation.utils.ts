@@ -12,11 +12,11 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
 export abstract class BaseValidator implements ValidatorConstraintInterface {
-  message: string;
+  protected message: string;
 
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
-  checkPropertyType(value: string, type: string): boolean {
+  protected checkPropertyType(value: string, type: string): boolean {
     switch (type) {
       case 'uuid':
         return isUUID(value, 4);
@@ -26,11 +26,11 @@ export abstract class BaseValidator implements ValidatorConstraintInterface {
     }
   }
 
-  getRepository(repositoryName: string): Repository<ObjectLiteral> {
+  protected getRepository(repositoryName: string): Repository<ObjectLiteral> {
     return this.dataSource.getRepository(repositoryName);
   }
 
-  getPropertyType<T>(
+  protected getPropertyType<T>(
     repository: Repository<T>,
     pathToProperty: string,
   ): string {
@@ -46,12 +46,12 @@ export abstract class BaseValidator implements ValidatorConstraintInterface {
     return propertyType;
   }
 
-  async getEntity<T>(
+  protected async getEntity<T>(
     value: string,
     repository: Repository<T>,
     pathToProperty: string,
     validationArguments: ValidationArguments,
-  ) {
+  ): Promise<T> {
     return repository.findOne({
       where: {
         [pathToProperty || validationArguments.property]: value,

@@ -11,6 +11,9 @@ import { ProductsModule } from './products/products.module';
 import { VouchersModule } from './vouchers/vouchers.module';
 import { CartsModule } from './carts/carts.module';
 import { VideosModule } from './videos/videos.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { LikesModule } from './likes/likes.module';
+import { BookmarksModule } from './bookmarks/bookmarks.module';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import { VideosModule } from './videos/videos.module';
     VouchersModule,
     CartsModule,
     VideosModule,
+    NotificationsModule,
+    LikesModule,
+    BookmarksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -22,7 +22,7 @@ export class VideosService {
     return this.videoRepository.find();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     return this.videoRepository.findOne({ where: { id } });
   }
 

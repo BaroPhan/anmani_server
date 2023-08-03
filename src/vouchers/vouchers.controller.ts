@@ -10,8 +10,10 @@ import {
 import { VouchersService } from './vouchers.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('vouchers')
+@ApiTags('vouchers')
 export class VouchersController {
   constructor(private readonly vouchersService: VouchersService) {}
 
