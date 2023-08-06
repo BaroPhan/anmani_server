@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { Product } from 'src/products/entities/product.entity';
-import { IsExist } from 'src/validation/isExist.validation';
+import { IsExist } from 'src/decorators/isExist.decorator';
 
 enum Option {
   AMOUNT = 'amount',

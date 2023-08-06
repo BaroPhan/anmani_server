@@ -12,10 +12,12 @@ export class LikesService {
     private readonly likeRepository: Repository<Like>,
   ) {}
 
-  async create(createLikeDto: CreateLikeDto) {
-    const isExist = await this.likeRepository.findOneBy(createLikeDto);
-    if (isExist) return this.likeRepository.delete(createLikeDto);
-    return this.likeRepository.save(this.likeRepository.create(createLikeDto));
+  async create({ userId, videoId }: CreateLikeDto) {
+    const isExist = await this.likeRepository.findOneBy({ userId, videoId });
+    if (isExist) return this.likeRepository.delete({ userId, videoId });
+    return this.likeRepository.save(
+      this.likeRepository.create({ userId, videoId }),
+    );
   }
 
   findAll() {

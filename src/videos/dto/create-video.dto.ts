@@ -7,7 +7,7 @@ import {
   IsOptional,
   IsUrl,
 } from 'class-validator';
-import { IsExist } from 'src/validation/isExist.validation';
+import { IsExist } from 'src/decorators/isExist.decorator';
 import { Video } from '../entities/video.entity';
 
 export class CreateVideoDto {

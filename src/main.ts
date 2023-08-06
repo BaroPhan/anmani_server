@@ -9,6 +9,7 @@ import {
 import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import { ConfigName } from './config/config.constants';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,7 @@ async function bootstrap() {
   app.setGlobalPrefix(API_PREFIX, { exclude: ['/'] });
   app.enableVersioning({ type: VersioningType.URI });
 
+  app.use(cookieParser('sercet'));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.enableShutdownHooks();

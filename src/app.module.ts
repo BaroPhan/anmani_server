@@ -6,7 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { UtilsModule } from './utils/utils.module';
-import { ValidationModule } from './validation/validation.module';
+import { DecoratorModule } from './decorators/decorator.module';
 import { ProductsModule } from './products/products.module';
 import { VouchersModule } from './vouchers/vouchers.module';
 import { CartsModule } from './carts/carts.module';
@@ -14,6 +14,9 @@ import { VideosModule } from './videos/videos.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { LikesModule } from './likes/likes.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -22,7 +25,7 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
     UsersModule,
     RolesModule,
     UtilsModule,
-    ValidationModule,
+    DecoratorModule,
     ProductsModule,
     VouchersModule,
     CartsModule,
@@ -30,8 +33,15 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
     NotificationsModule,
     LikesModule,
     BookmarksModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

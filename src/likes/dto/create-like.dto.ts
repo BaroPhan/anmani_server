@@ -1,17 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
-import { User } from 'src/users/entities/user.entity';
-import { IsExist } from 'src/validation/isExist.validation';
-import { Video } from 'src/videos/entities/video.entity';
+import { PickType } from '@nestjs/swagger';
+import { Like, createLikeDTO } from '../entities/like.entity';
 
-export class CreateLikeDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsExist(User)
-  userId: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsExist(Video)
-  videoId: string;
-}
+export class CreateLikeDto extends PickType(Like, createLikeDTO) {}

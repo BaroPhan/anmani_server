@@ -1,21 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
-import { Product } from 'src/products/entities/product.entity';
-import { User } from 'src/users/entities/user.entity';
-import { IsExist } from 'src/validation/isExist.validation';
+import { PickType } from '@nestjs/swagger';
+import { Cart, createCartDTO } from '../entities/cart.entity';
 
-export class CreateCartDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsExist(User)
-  userId: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsExist(Product)
-  productId: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  status: string;
-}
+export class CreateCartDto extends PickType(Cart, createCartDTO) {}

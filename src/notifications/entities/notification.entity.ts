@@ -11,7 +11,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty, IsUrl } from 'class-validator';
+import { IsExist } from 'src/decorators/isExist.decorator';
 
+enum Type {
+  UPDATE = 'update',
+  INFO = 'info',
+}
 @Entity()
 export class Notification extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -19,18 +26,31 @@ export class Notification extends BaseEntity {
   id: string;
 
   @Column({ type: String })
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEnum(Type)
   type: string;
 
   @Column({ type: String })
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsUrl()
   avatar: string;
 
   @Column({ type: String })
+  @ApiProperty()
+  @IsNotEmpty()
   title: string;
 
   @Column({ type: String })
+  @ApiProperty()
+  @IsNotEmpty()
   content: string;
 
   @Column({ type: String })
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsExist(User)
   userId: string;
 
   @ManyToOne(() => User, { eager: true, onDelete: 'CASCADE' })
@@ -46,3 +66,11 @@ export class Notification extends BaseEntity {
   @DeleteDateColumn()
   deletedAt: Date;
 }
+
+export const createNotificationDTO = [
+  'type',
+  'avatar',
+  'title',
+  'content',
+  'userId',
+] as readonly (keyof Notification)[];
