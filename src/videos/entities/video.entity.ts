@@ -11,6 +11,17 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  ArrayNotEmpty,
+  ArrayUnique,
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
+import { IsExist } from 'src/decorators/isExist.decorator';
 
 @Entity()
 export class Video extends BaseEntity {
@@ -19,13 +30,24 @@ export class Video extends BaseEntity {
   id: string;
 
   @Column({ type: String })
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   title: string;
 
   @Column({ type: String })
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsUrl()
   url: string;
 
   @Column({ type: 'json', nullable: true })
   @Exclude({ toClassOnly: true })
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsExist(Video)
   stories: string[];
 
   @OneToMany(() => Video, (video) => video.stories)
@@ -48,3 +70,6 @@ export class Video extends BaseEntity {
   @DeleteDateColumn()
   deletedAt: Date;
 }
+
+export const queryVideoDto = ['title', 'url'] as const;
+export const createVideoDTO = [...queryVideoDto, 'stories'] as const;

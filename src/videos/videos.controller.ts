@@ -6,13 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { QueryVideoDto } from './dto/query-video.dto';
 
-@Controller('videos')
+@Controller({ path: 'videos', version: '1' })
 @ApiTags('videos')
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
@@ -23,8 +25,8 @@ export class VideosController {
   }
 
   @Get()
-  findAll() {
-    return this.videosService.findAll();
+  findAll(@Query() queryVideoDto: QueryVideoDto) {
+    return this.videosService.findAll(queryVideoDto);
   }
 
   @Get(':id')

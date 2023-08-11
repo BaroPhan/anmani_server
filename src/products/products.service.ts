@@ -4,6 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { QueryProductDto } from './dto/query-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -18,8 +19,14 @@ export class ProductsService {
     );
   }
 
-  findAll() {
-    return this.productRepository.find();
+  findAll(queryProductDto: QueryProductDto) {
+    const { page, limit, sort, order, ...query } = queryProductDto;
+    return this.productRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      where: query,
+      order: { [sort]: order },
+    });
   }
 
   findOne(id: string) {

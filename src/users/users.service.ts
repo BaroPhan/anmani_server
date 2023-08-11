@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { QueryUserDto } from './dto/query-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -16,8 +17,14 @@ export class UsersService {
     return this.userRepository.save(this.userRepository.create(createUserDto));
   }
 
-  findAll() {
-    return this.userRepository.find();
+  findAll(queryUserDto: QueryUserDto) {
+    const { page, limit, sort, order, ...query } = queryUserDto;
+    return this.userRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      where: query,
+      order: { [sort]: order },
+    });
   }
 
   findOne(id: string) {

@@ -4,6 +4,7 @@ import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Notification } from './entities/notification.entity';
 import { Repository } from 'typeorm';
+import { QueryNotificationDto } from './dto/query-notification.dto';
 
 @Injectable()
 export class NotificationsService {
@@ -18,12 +19,22 @@ export class NotificationsService {
     );
   }
 
-  findAll() {
-    return this.notificationRepository.find();
+  findAll(queryNotifcationDto: QueryNotificationDto) {
+    const { page, limit, sort, order, ...query } = queryNotifcationDto;
+    return this.notificationRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      where: query,
+      order: { [sort]: order },
+    });
   }
 
   findOne(id: string) {
     return this.notificationRepository.findOne({ where: { id } });
+  }
+
+  findByUserId(userId: string) {
+    return this.notificationRepository.findBy({ userId });
   }
 
   update(id: string, updateNotificationDto: UpdateNotificationDto) {

@@ -4,6 +4,7 @@ import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { Voucher } from './entities/voucher.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { QueryVoucherDto } from './dto/query-voucher.dto';
 
 @Injectable()
 export class VouchersService {
@@ -18,8 +19,14 @@ export class VouchersService {
     );
   }
 
-  findAll() {
-    return this.voucherRepository.find();
+  findAll(queryVoucherDto: QueryVoucherDto) {
+    const { page, limit, sort, order, ...query } = queryVoucherDto;
+    return this.voucherRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      where: query,
+      order: { [sort]: order },
+    });
   }
 
   findOne(id: string) {

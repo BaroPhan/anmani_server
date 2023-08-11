@@ -6,13 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { VouchersService } from './vouchers.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { QueryUserDto } from 'src/users/dto/query-user.dto';
 
-@Controller('vouchers')
+@Controller({ path: 'vouchers', version: '1' })
 @ApiTags('vouchers')
 export class VouchersController {
   constructor(private readonly vouchersService: VouchersService) {}
@@ -23,8 +25,8 @@ export class VouchersController {
   }
 
   @Get()
-  findAll() {
-    return this.vouchersService.findAll();
+  findAll(@Query() queryUserDto: QueryUserDto) {
+    return this.vouchersService.findAll(queryUserDto);
   }
 
   @Get(':id')

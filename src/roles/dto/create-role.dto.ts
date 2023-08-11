@@ -1,9 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
+import { Role, createRoleDTO } from '../entities/role.entity';
 
-export class CreateRoleDto {
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-}
+export class CreateRoleDto extends PickType(Role, createRoleDTO) {}

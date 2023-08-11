@@ -12,7 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsUrl } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, IsUUID, IsUrl } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
 
 enum Type {
@@ -40,16 +40,19 @@ export class Notification extends BaseEntity {
   @Column({ type: String })
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   title: string;
 
   @Column({ type: String })
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   content: string;
 
   @Column({ type: String })
   @ApiProperty()
   @IsNotEmpty()
+  @IsUUID()
   @IsExist(User)
   userId: string;
 
@@ -73,4 +76,4 @@ export const createNotificationDTO = [
   'title',
   'content',
   'userId',
-] as readonly (keyof Notification)[];
+] as const;

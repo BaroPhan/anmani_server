@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsUUID } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
 
 @Entity()
@@ -19,12 +19,14 @@ export class Like extends BaseEntity {
   @PrimaryColumn()
   @ApiProperty()
   @IsNotEmpty()
+  @IsUUID()
   @IsExist(User)
   userId: string;
 
   @PrimaryColumn()
   @ApiProperty()
   @IsNotEmpty()
+  @IsUUID()
   @IsExist(Video)
   videoId: string;
 

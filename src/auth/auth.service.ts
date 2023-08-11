@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { RegisterUserDto } from './dto/auth-register';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { LoginUserDto } from './dto/auth-login';
 
 @Injectable()
 export class AuthService {
@@ -19,9 +20,9 @@ export class AuthService {
     );
   }
 
-  async login({ email, password }: RegisterUserDto) {
+  async login({ email, password }: LoginUserDto) {
     const user = await this.userRepository.findOneBy({ email, password });
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new BadRequestException('Invalid user credentials!');
     return this.generateJwtToken(user);
   }
 

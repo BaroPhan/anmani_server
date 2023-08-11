@@ -5,6 +5,8 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsString,
+  IsUUID,
   Matches,
 } from 'class-validator';
 import { Role } from 'src/roles/entities/role.entity';
@@ -18,6 +20,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -38,6 +41,7 @@ export class User extends BaseEntity {
   @Column({ type: String })
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   name: string;
 
   @Column({ type: String, unique: true })
@@ -51,6 +55,7 @@ export class User extends BaseEntity {
   @Exclude({ toPlainOnly: true })
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   password: string;
 
   @Column({ type: String })
@@ -62,7 +67,9 @@ export class User extends BaseEntity {
   @Column({ type: String, unique: true })
   @ApiProperty()
   @IsNotEmpty()
-  @Matches(Helper.regex.phoneNumber)
+  @Matches(Helper.regex.phoneNumber, {
+    message: 'phoneNumber must be a valid phone number',
+  })
   @IsUnique(User)
   phoneNumber: string;
 
@@ -72,13 +79,17 @@ export class User extends BaseEntity {
   @IsDateString()
   dateOfBirth: Date;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsUUID()
+  @IsExist(Role)
+  roleId: string;
+
   @ManyToOne(() => Role, {
     eager: true,
     onDelete: 'CASCADE',
   })
-  @ApiProperty({ type: Role })
-  @IsNotEmpty()
-  @IsExist(Role)
+  @JoinColumn({ name: 'roleId' })
   role: Role;
 
   @CreateDateColumn()
@@ -99,15 +110,18 @@ export class User extends BaseEntity {
     }
   }
 }
-
-export const createUserDTO = [
+export const queryUserDTO = [
   'name',
   'email',
-  'password',
   'gender',
   'phoneNumber',
-  'dateOfBirth',
-  'role',
-] as readonly (keyof User)[];
+  'roleId',
+] as const;
 
-export const loginUserDTO = ['email', 'password'] as readonly (keyof User)[];
+export const createUserDTO = [
+  ...queryUserDTO,
+  'dateOfBirth',
+  'password',
+] as const;
+
+export const loginUserDTO = ['email', 'password'] as const;

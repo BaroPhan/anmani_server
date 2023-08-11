@@ -6,13 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { BookmarksService } from './bookmarks.service';
 import { CreateBookmarkDto } from './dto/create-bookmark.dto';
 import { UpdateBookmarkDto } from './dto/update-bookmark.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { QueryBookmarkDto } from './dto/query-bookmark.dto';
 
-@Controller('bookmarks')
+@Controller({ path: 'bookmarks', version: '1' })
 @ApiTags('bookmarks')
 export class BookmarksController {
   constructor(private readonly bookmarksService: BookmarksService) {}
@@ -23,13 +25,28 @@ export class BookmarksController {
   }
 
   @Get()
-  findAll() {
-    return this.bookmarksService.findAll();
+  findAll(@Query() queryBookmarkDto: QueryBookmarkDto) {
+    return this.bookmarksService.findAll(queryBookmarkDto);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.bookmarksService.findOne(id);
+  }
+
+  @Get('user/:id')
+  findByUserId(@Param('id') userId: string) {
+    return this.bookmarksService.findByUserId(userId);
+  }
+
+  @Get('video/:id')
+  findByVideoId(@Param('id') videoId: string) {
+    return this.bookmarksService.findByVideoId(videoId);
+  }
+
+  @Get('product/:id')
+  findByProductId(@Param('id') productId: string) {
+    return this.bookmarksService.findByProductId(productId);
   }
 
   @Patch(':id')

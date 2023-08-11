@@ -4,8 +4,10 @@ import { RegisterUserDto } from './dto/auth-register';
 import { LoginUserDto } from './dto/auth-login';
 import { IsPublic } from 'src/decorators/isPublic.decorator';
 import { CookieInterceptor } from 'src/interceptors/cookie.interceptor';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('auth')
+@Controller({ path: 'auth', version: '1' })
+@ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

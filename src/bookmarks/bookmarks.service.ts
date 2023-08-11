@@ -4,6 +4,7 @@ import { UpdateBookmarkDto } from './dto/update-bookmark.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bookmark } from './entities/bookmark.entity';
 import { Repository } from 'typeorm';
+import { QueryBookmarkDto } from './dto/query-bookmark.dto';
 
 @Injectable()
 export class BookmarksService {
@@ -18,12 +19,30 @@ export class BookmarksService {
     );
   }
 
-  findAll() {
-    return this.bookmarkRepository.find();
+  findAll(queryBookmarkDto: QueryBookmarkDto) {
+    const { page, limit, sort, order, ...query } = queryBookmarkDto;
+    return this.bookmarkRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      where: query,
+      order: { [sort]: order },
+    });
   }
 
   findOne(id: string) {
     return this.bookmarkRepository.findOne({ where: { id } });
+  }
+
+  findByUserId(userId: string) {
+    return this.bookmarkRepository.findBy({ userId });
+  }
+
+  findByProductId(productId: string) {
+    return this.bookmarkRepository.findBy({ productId });
+  }
+
+  findByVideoId(videoId: string) {
+    return this.bookmarkRepository.findBy({ videoId });
   }
 
   update(id: string, updateBookmarkDto: UpdateBookmarkDto) {

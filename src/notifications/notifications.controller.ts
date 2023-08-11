@@ -6,13 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { QueryNotificationDto } from './dto/query-notification.dto';
 
-@Controller('notifications')
+@Controller({ path: 'notifications', version: '1' })
 @ApiTags('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
@@ -23,13 +25,18 @@ export class NotificationsController {
   }
 
   @Get()
-  findAll() {
-    return this.notificationsService.findAll();
+  findAll(@Query() queryNotificationDto: QueryNotificationDto) {
+    return this.notificationsService.findAll(queryNotificationDto);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.notificationsService.findOne(id);
+  }
+
+  @Get('user/:id')
+  findByUserId(@Param('id') userId: string) {
+    return this.notificationsService.findByUserId(userId);
   }
 
   @Patch(':id')

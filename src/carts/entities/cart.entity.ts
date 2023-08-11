@@ -12,7 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
 
 @Entity()
@@ -20,12 +20,14 @@ export class Cart extends BaseEntity {
   @PrimaryColumn()
   @ApiProperty()
   @IsNotEmpty()
+  @IsUUID()
   @IsExist(User)
   userId: string;
 
   @PrimaryColumn()
   @ApiProperty()
   @IsNotEmpty()
+  @IsUUID()
   @IsExist(Product)
   productId: string;
 
@@ -40,6 +42,7 @@ export class Cart extends BaseEntity {
   @Column({ type: String })
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   status: string;
 
   @CreateDateColumn()
@@ -52,8 +55,4 @@ export class Cart extends BaseEntity {
   deletedAt: Date;
 }
 
-export const createCartDTO = [
-  'userId',
-  'productId',
-  'status',
-] as readonly (keyof Cart)[];
+export const createCartDTO = ['userId', 'productId', 'status'] as const;

@@ -98,4 +98,4 @@ export const createBookmarkDTO = [
   'productId',
   'videoId',
   'type',
-] as readonly (keyof Bookmark)[];
+] as const;
