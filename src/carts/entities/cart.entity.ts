@@ -12,9 +12,14 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
 
+enum Status {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  COMPLETED = 'completed',
+}
 @Entity()
 export class Cart extends BaseEntity {
   @PrimaryColumn()
@@ -39,11 +44,11 @@ export class Cart extends BaseEntity {
   @JoinColumn({ name: 'productId' })
   product: Product;
 
-  @Column({ type: String })
+  @Column({ type: String, default: Status.PENDING })
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  status: string;
+  @IsOptional()
+  @IsEnum(Status)
+  status: Status;
 
   @CreateDateColumn()
   createdAt: Date;

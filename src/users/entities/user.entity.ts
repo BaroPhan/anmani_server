@@ -5,6 +5,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUUID,
   Matches,
@@ -27,6 +28,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { IsExist } from 'src/decorators/isExist.decorator';
+import { RolesEnum } from 'src/guards/role.guards';
 
 enum Gender {
   MALE = 'male',
@@ -58,15 +60,15 @@ export class User extends BaseEntity {
   @IsString()
   password: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(Gender)
   gender: string;
 
-  @Column({ type: String, unique: true })
+  @Column({ type: String, unique: true, nullable: true })
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @Matches(Helper.regex.phoneNumber, {
     message: 'phoneNumber must be a valid phone number',
   })
@@ -81,7 +83,7 @@ export class User extends BaseEntity {
 
   @Column({ type: 'uuid' })
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsUUID()
   @IsExist(Role)
   roleId: string;
@@ -98,6 +100,12 @@ export class User extends BaseEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @BeforeInsert()
+  async setDefaultRole() {
+    if (!this.roleId)
+      this.roleId = (await Role.findOneBy({ name: RolesEnum.USER })).id;
+  }
 
   @BeforeInsert()
   @BeforeUpdate()

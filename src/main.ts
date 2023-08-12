@@ -20,6 +20,9 @@ async function bootstrap() {
     .getOrThrow(ConfigName.APP, { infer: true });
   app.setGlobalPrefix(API_PREFIX, { exclude: ['/'] });
   app.enableVersioning({ type: VersioningType.URI });
+  app.enableCors({
+    origin: '*',
+  });
 
   app.use(cookieParser('sercet'));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));

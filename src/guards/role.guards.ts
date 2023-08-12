@@ -6,7 +6,6 @@ export enum RolesEnum {
   ADMIN = 'admin',
   USER = 'user',
 }
-
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
