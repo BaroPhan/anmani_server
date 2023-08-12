@@ -16,7 +16,8 @@ import { LikesModule } from './likes/likes.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './strategies/jwt.strategy';
+import { RolesGuard } from './guards/role.guards';
+import { JwtAuthGuard } from './guards/jwt.guards';
 
 @Module({
   imports: [
@@ -41,6 +42,10 @@ import { JwtAuthGuard } from './strategies/jwt.strategy';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

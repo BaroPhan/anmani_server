@@ -27,6 +27,10 @@ export class UsersService {
     });
   }
 
+  findByRoleId(roleId: string) {
+    return this.userRepository.findBy({ roleId });
+  }
+
   findOne(id: string) {
     return this.userRepository.findOne({ where: { id } });
   }

@@ -1,15 +1,9 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { AuthGuard, PassportStrategy } from '@nestjs/passport';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { ConfigName } from 'src/config/config.constants';
 import { AuthVariables } from 'src/config/configs/auth.config';
-import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from 'src/decorators/isPublic.decorator';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -31,21 +25,5 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   public validate(payload: any) {
     if (!payload.sub) throw new UnauthorizedException();
     return payload;
-  }
-}
-
-@Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
-    super();
-  }
-
-  canActivate(context: ExecutionContext) {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    if (isPublic) return true;
-    return super.canActivate(context);
   }
 }

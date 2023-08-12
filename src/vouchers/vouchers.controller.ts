@@ -34,6 +34,11 @@ export class VouchersController {
     return this.vouchersService.findOne(id);
   }
 
+  @Get('product/:id')
+  findByProductId(@Param('id') productId: string) {
+    return this.vouchersService.findByProductId(productId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateVoucherDto: UpdateVoucherDto) {
     return this.vouchersService.update(id, updateVoucherDto);

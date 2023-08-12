@@ -11,8 +11,11 @@ import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/decorators/isPublic.decorator';
+import { RolesEnum } from 'src/guards/role.guards';
 
 @ApiTags('roles')
+@Roles(RolesEnum.ADMIN)
 @Controller({ path: 'roles', version: '1' })
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}

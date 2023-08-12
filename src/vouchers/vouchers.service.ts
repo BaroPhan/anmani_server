@@ -29,6 +29,10 @@ export class VouchersService {
     });
   }
 
+  findByProductId(productId: string) {
+    return this.voucherRepository.findBy({ productId });
+  }
+
   findOne(id: string) {
     return this.voucherRepository.findOne({ where: { id } });
   }

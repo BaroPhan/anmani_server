@@ -13,9 +13,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { QueryUserDto } from './dto/query-user.dto';
+import { RolesEnum } from 'src/guards/role.guards';
+import { Roles } from 'src/decorators/isPublic.decorator';
 
 @Controller({ path: 'users', version: '1' })
 @ApiTags('users')
+@Roles(RolesEnum.ADMIN)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -32,6 +35,11 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @Get('role/:id')
+  findByRoleId(@Param('id') roleId: string) {
+    return this.usersService.findByRoleId(roleId);
   }
 
   @Patch(':id')

@@ -79,16 +79,14 @@ export class User extends BaseEntity {
   @IsDateString()
   dateOfBirth: Date;
 
+  @Column({ type: 'uuid' })
   @ApiProperty()
   @IsNotEmpty()
   @IsUUID()
   @IsExist(Role)
   roleId: string;
 
-  @ManyToOne(() => Role, {
-    eager: true,
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Role, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'roleId' })
   role: Role;
 
