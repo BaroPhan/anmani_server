@@ -13,6 +13,7 @@ import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { QueryVideoDto } from './dto/query-video.dto';
+import { IsPublic } from 'src/decorators/isPublic.decorator';
 
 @Controller({ path: 'videos', version: '1' })
 @ApiTags('videos')
@@ -24,11 +25,13 @@ export class VideosController {
     return this.videosService.create(createVideoDto);
   }
 
+  @IsPublic()
   @Get()
   findAll(@Query() queryVideoDto: QueryVideoDto) {
     return this.videosService.findAll(queryVideoDto);
   }
 
+  @IsPublic()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.videosService.findOne(id);

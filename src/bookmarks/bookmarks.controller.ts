@@ -13,6 +13,7 @@ import { CreateBookmarkDto } from './dto/create-bookmark.dto';
 import { UpdateBookmarkDto } from './dto/update-bookmark.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { QueryBookmarkDto } from './dto/query-bookmark.dto';
+import { IsPublic } from 'src/decorators/isPublic.decorator';
 
 @Controller({ path: 'bookmarks', version: '1' })
 @ApiTags('bookmarks')
@@ -39,11 +40,13 @@ export class BookmarksController {
     return this.bookmarksService.findByUserId(userId);
   }
 
+  @IsPublic()
   @Get('video/:id')
   findByVideoId(@Param('id') videoId: string) {
     return this.bookmarksService.findByVideoId(videoId);
   }
 
+  @IsPublic()
   @Get('product/:id')
   findByProductId(@Param('id') productId: string) {
     return this.bookmarksService.findByProductId(productId);
