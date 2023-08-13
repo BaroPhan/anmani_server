@@ -12,10 +12,10 @@ export class RolesSeedService {
   ) {}
 
   async seed() {
-    const users = await this.roleRepository.countBy({
+    const roles = await this.roleRepository.countBy({
       name: In(seedData.map(({ name }) => name)),
     });
-    if (users !== seedData.length)
+    if (roles !== seedData.length)
       await this.roleRepository.upsert(seedData, ['id']);
   }
 }
