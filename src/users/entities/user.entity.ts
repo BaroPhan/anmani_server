@@ -75,9 +75,9 @@ export class User extends BaseEntity {
   @IsUnique(User)
   phoneNumber: string;
 
-  @Column({ type: Date })
+  @Column({ type: Date, nullable: true })
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
   dateOfBirth: Date;
 

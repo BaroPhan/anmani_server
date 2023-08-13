@@ -3,12 +3,14 @@
     "id": "33078e97-dba9-42f1-a0c5-e144f07939bc",
     "name": "admin",
     "email": "admin@email.com",
+    "password": "$2b$10$D/iHbh3ph3d2cYF0cbtMJ.7FQ1nZnQwnKQ0QHyCb0f0cXlhc3RhaG",
     "roleId": "cbe0f797-0a6c-463f-bd34-6353718f4d11"
   },
   {
     "id": "74051e90-192f-4a22-a5ff-29c12e3b1d60",
     "name": "user",
     "email": "user@email.com",
+    "password": "$2b$10$IsF9nNxaCpbzkEO5pxrFgOppUFIR2SGEfTn8nM0V7SlMsFfeTLupa",
     "roleId": "707fc2ad-8bde-4ad3-8cb6-932346ff3c0c"
   }
 ]
