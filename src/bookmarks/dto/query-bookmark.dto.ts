@@ -1,5 +1,5 @@
 import {
-  ApiProperty,
+  ApiPropertyOptional,
   IntersectionType,
   PartialType,
   PickType,
@@ -11,7 +11,7 @@ import { IsIn, IsOptional, IsString } from 'class-validator';
 export class QueryBookmarkDto extends PartialType(
   IntersectionType(QueryDTO, PickType(Bookmark, createBookmarkDTO)),
 ) {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   @IsIn(createBookmarkDTO)

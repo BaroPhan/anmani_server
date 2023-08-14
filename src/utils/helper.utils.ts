@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional } from 'class-validator';
+import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 
 export class Helper {
   static readonly regex: {
@@ -27,19 +28,19 @@ enum ORDER {
   DESC = 'desc',
 }
 export class QueryDTO {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @Transform(({ value }) => parseInt(value) || null)
   @IsNumber()
   page: number = 1;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @Transform(({ value }) => parseInt(value) || null)
   @IsNumber()
   limit: number = 10;
 
-  @ApiProperty()
+  @ApiPropertyEnum(ORDER)
   @IsOptional()
   @IsEnum(ORDER)
   order: ORDER;

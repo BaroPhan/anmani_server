@@ -14,6 +14,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
+import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 
 enum Status {
   PENDING = 'pending',
@@ -45,7 +46,7 @@ export class Cart extends BaseEntity {
   product: Product;
 
   @Column({ type: String, default: Status.PENDING })
-  @ApiProperty()
+  @ApiPropertyEnum(Status)
   @IsOptional()
   @IsEnum(Status)
   status: Status;

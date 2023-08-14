@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
+import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 import { Product } from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Video } from 'src/videos/entities/video.entity';
@@ -36,14 +37,14 @@ export class Bookmark extends BaseEntity {
   userId: string;
 
   @Column({ type: 'uuid', nullable: true })
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
   @IsExist(Video)
   videoId: string;
 
   @Column({ type: 'uuid', nullable: true })
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
   @IsExist(Product)
@@ -62,7 +63,7 @@ export class Bookmark extends BaseEntity {
   product: Product;
 
   @Column({ type: String })
-  @ApiProperty()
+  @ApiPropertyEnum(Type)
   @IsNotEmpty()
   @IsEnum(Type)
   type: string;

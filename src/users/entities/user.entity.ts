@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import {
   IsDateString,
@@ -29,6 +29,10 @@ import {
 import * as bcrypt from 'bcrypt';
 import { IsExist } from 'src/decorators/isExist.decorator';
 import { RolesEnum } from 'src/guards/role.guards';
+import {
+  ApiPropertyEmail,
+  ApiPropertyEnum,
+} from 'src/decorators/swagger.decorator';
 
 enum Gender {
   MALE = 'male',
@@ -47,7 +51,7 @@ export class User extends BaseEntity {
   name: string;
 
   @Column({ type: String, unique: true })
-  @ApiProperty()
+  @ApiPropertyEmail()
   @IsNotEmpty()
   @IsEmail()
   @IsUnique(User)
@@ -61,13 +65,13 @@ export class User extends BaseEntity {
   password: string;
 
   @Column({ type: String, nullable: true })
-  @ApiProperty()
+  @ApiPropertyEnum(Gender)
   @IsOptional()
   @IsEnum(Gender)
   gender: string;
 
   @Column({ type: String, unique: true, nullable: true })
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @Matches(Helper.regex.phoneNumber, {
     message: 'phoneNumber must be a valid phone number',
@@ -76,13 +80,13 @@ export class User extends BaseEntity {
   phoneNumber: string;
 
   @Column({ type: Date, nullable: true })
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsDateString()
   dateOfBirth: Date;
 
   @Column({ type: 'uuid' })
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
   @IsExist(Role)

@@ -11,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   ArrayUnique,
@@ -22,6 +22,7 @@ import {
   IsUrl,
 } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
+import { ApiPropertyURL } from 'src/decorators/swagger.decorator';
 
 @Entity()
 export class Video extends BaseEntity {
@@ -36,12 +37,13 @@ export class Video extends BaseEntity {
   title: string;
 
   @Column({ type: String })
-  @ApiProperty()
+  @ApiPropertyURL()
   @IsNotEmpty()
   @IsUrl()
   url: string;
 
   @Column({ type: 'json', nullable: true })
+  @ApiPropertyOptional()
   @Exclude({ toClassOnly: true })
   @IsOptional()
   @IsArray()

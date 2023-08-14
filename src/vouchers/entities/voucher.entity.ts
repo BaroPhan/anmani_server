@@ -12,9 +12,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
+import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 
 enum Option {
   AMOUNT = 'amount',
@@ -45,19 +46,19 @@ export class Voucher extends BaseEntity {
   condition: string;
 
   @Column({ type: String })
-  @ApiProperty()
+  @ApiPropertyEnum(Option)
   @IsNotEmpty()
   @IsEnum(Option)
   option: string;
 
   @Column({ type: Number, nullable: true })
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
   amount: number;
 
   @Column({ type: Number, nullable: true })
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
   percentage: number;

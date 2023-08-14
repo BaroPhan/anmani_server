@@ -14,6 +14,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsString, IsUUID, IsUrl } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
+import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 
 enum Type {
   UPDATE = 'update',
@@ -26,7 +27,7 @@ export class Notification extends BaseEntity {
   id: string;
 
   @Column({ type: String })
-  @ApiProperty()
+  @ApiPropertyEnum(Type)
   @IsNotEmpty()
   @IsEnum(Type)
   type: string;

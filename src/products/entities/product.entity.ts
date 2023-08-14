@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEnum,
   IsNotEmpty,
@@ -20,6 +20,12 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsUrlArray } from 'src/decorators/isURLArray.decorator';
+import {
+  ApiPropertyEnum,
+  ApiPropertyURL,
+  ApiPropertyURLArray,
+} from 'src/decorators/swagger.decorator';
 
 enum ProductType {
   SINGLE = 'single',
@@ -41,7 +47,7 @@ class Investor {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty()
+  @ApiPropertyURL()
   @IsNotEmpty()
   @IsUrl()
   logo: string;
@@ -125,17 +131,38 @@ class Location {
   @IsNumber()
   lng: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: LocationDetail })
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => LocationDetail)
   nearby: LocationDetail;
 
-  @ApiProperty()
+  @ApiProperty({ type: LocationDetail })
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => LocationDetail)
   popular: LocationDetail;
+}
+class Image {
+  @ApiPropertyURL()
+  @IsNotEmpty()
+  @IsUrl()
+  thumbnail: string;
+
+  @ApiPropertyURL()
+  @IsNotEmpty()
+  @IsUrl()
+  main: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  reality: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  area: string[];
 }
 @Entity()
 export class Product extends BaseEntity {
@@ -144,19 +171,19 @@ export class Product extends BaseEntity {
   id: string;
 
   @Column({ type: String })
-  @ApiProperty()
+  @ApiPropertyEnum(ProductType)
   @IsNotEmpty()
   @IsEnum(ProductType)
   type: string;
 
   @Column({ type: String })
-  @ApiProperty()
+  @ApiPropertyEnum(Tag)
   @IsNotEmpty()
   @IsEnum(Tag)
   tag: string;
 
   @Column({ type: 'json', nullable: true })
-  @ApiProperty()
+  @ApiPropertyOptional({ type: Investor })
   @IsOptional()
   @ValidateNested()
   @Type(() => Investor)
@@ -181,47 +208,48 @@ export class Product extends BaseEntity {
   originalPrice: number;
 
   @Column({ type: 'json' })
-  @ApiProperty()
+  @ApiProperty({ type: Information })
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Information)
   information: object;
 
   @Column({ type: 'json' })
-  @ApiProperty()
+  @ApiProperty({ type: Policy })
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Policy)
   policy: object;
 
   @Column({ type: 'json' })
-  @ApiProperty()
+  @ApiProperty({ type: Description })
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Description)
   description: object;
 
   @Column({ type: 'json' })
-  @ApiProperty()
+  @ApiProperty({ type: Location })
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Location)
   location: object;
 
   @Column({ type: Number, default: 0 })
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
   view: number;
 
-  @Column({ type: String })
-  @ApiProperty()
+  @Column({ type: 'json' })
+  @ApiProperty({ type: Image })
   @IsNotEmpty()
-  @IsUrl()
-  thumbnail: string;
+  @ValidateNested()
+  @Type(() => Image)
+  image: object;
 
   @Column({ type: String })
-  @ApiProperty()
+  @ApiPropertyEnum(Status)
   @IsNotEmpty()
   @IsEnum(Status)
   status: string;
@@ -248,6 +276,6 @@ export const createProductDTO = [
   'description',
   'location',
   'view',
-  'thumbnail',
+  'image',
   'status',
 ] as const;
