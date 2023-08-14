@@ -21,7 +21,8 @@ async function bootstrap() {
   app.setGlobalPrefix(API_PREFIX, { exclude: ['/'] });
   app.enableVersioning({ type: VersioningType.URI });
   app.enableCors({
-    origin: '*',
+    origin: ['http://localhost:*'],
+    credentials: true,
   });
 
   app.use(cookieParser('sercet'));
