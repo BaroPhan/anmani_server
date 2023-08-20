@@ -7,7 +7,7 @@ import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 export class QueryVoucherDto extends PartialType(
   IntersectionType(QueryDTO, PickType(Voucher, createVoucherDTO)),
 ) {
-  @ApiPropertyEnum(createVoucherDTO)
+  @ApiPropertyEnum(createVoucherDTO, { required: false })
   @IsOptional()
   @IsString()
   @IsIn(createVoucherDTO)

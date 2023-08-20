@@ -11,6 +11,8 @@ import {
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsArray,
+  IsDateString,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -90,14 +92,34 @@ class Policy {
   @IsNotEmpty()
   equity: string;
 }
+class DescriptionDelivery {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDateString()
+  date: Date;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  info: string;
+}
 class Description {
   @ApiProperty()
   @IsNotEmpty()
   pros: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  cons: string;
+
   @ApiProperty()
   @IsNotEmpty()
-  cons: string;
+  juridice: string;
+
+  @ApiProperty({ type: DescriptionDelivery })
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => DescriptionDelivery)
+  delivery: DescriptionDelivery;
 }
 class LocationDetail {
   @ApiProperty()
@@ -131,17 +153,19 @@ class Location {
   @IsNumber()
   lng: number;
 
-  @ApiProperty({ type: LocationDetail })
+  @ApiProperty({ type: LocationDetail, isArray: true })
+  @IsArray()
   @IsNotEmpty()
-  @ValidateNested()
+  @ValidateNested({ each: true })
   @Type(() => LocationDetail)
-  nearby: LocationDetail;
+  nearby: LocationDetail[];
 
-  @ApiProperty({ type: LocationDetail })
+  @ApiProperty({ type: LocationDetail, isArray: true })
+  @IsArray()
   @IsNotEmpty()
-  @ValidateNested()
+  @ValidateNested({ each: true })
   @Type(() => LocationDetail)
-  popular: LocationDetail;
+  popular: LocationDetail[];
 }
 class Image {
   @ApiPropertyURL()
@@ -195,13 +219,13 @@ export class Product extends BaseEntity {
   @IsString()
   name: string;
 
-  @Column({ type: Number })
+  @Column('bigint')
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   price: number;
 
-  @Column({ type: Number })
+  @Column('bigint')
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()

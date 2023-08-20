@@ -7,7 +7,7 @@ import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 export class QueryVideoDto extends PartialType(
   IntersectionType(QueryDTO, PickType(Video, queryVideoDto)),
 ) {
-  @ApiPropertyEnum(queryVideoDto)
+  @ApiPropertyEnum(queryVideoDto, { required: false })
   @IsOptional()
   @IsString()
   @IsIn(queryVideoDto)

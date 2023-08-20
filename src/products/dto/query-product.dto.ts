@@ -4,10 +4,11 @@ import { IsIn, IsOptional, IsString } from 'class-validator';
 import { Product, createProductDTO } from '../entities/product.entity';
 import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 
-export class QueryProductDto extends PartialType(
-  IntersectionType(QueryDTO, PickType(Product, createProductDTO)),
+export class QueryProductDto extends IntersectionType(
+  QueryDTO,
+  PartialType(PickType(Product, createProductDTO)),
 ) {
-  @ApiPropertyEnum(createProductDTO)
+  @ApiPropertyEnum(createProductDTO, { required: false })
   @IsOptional()
   @IsString()
   @IsIn(createProductDTO)

@@ -10,7 +10,7 @@ import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 export class QueryNotificationDto extends PartialType(
   IntersectionType(QueryDTO, PickType(Notification, createNotificationDTO)),
 ) {
-  @ApiPropertyEnum(createNotificationDTO)
+  @ApiPropertyEnum(createNotificationDTO, { required: false })
   @IsOptional()
   @IsString()
   @IsIn(createNotificationDTO)

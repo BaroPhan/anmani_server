@@ -1,5 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 
 export function ApiPropertyEmail(): PropertyDecorator {
   return applyDecorators(ApiProperty({ default: 'name@email.com' }));
@@ -15,6 +15,9 @@ export function ApiPropertyURLArray(): PropertyDecorator {
   );
 }
 
-export function ApiPropertyEnum(enumObject: object): PropertyDecorator {
-  return ApiProperty({ enum: enumObject, default: enumObject[0] });
+export function ApiPropertyEnum(
+  enumObject: object,
+  args?: ApiPropertyOptions,
+): PropertyDecorator {
+  return ApiProperty({ enum: enumObject, default: enumObject[0], ...args });
 }

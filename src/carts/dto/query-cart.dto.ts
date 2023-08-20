@@ -7,7 +7,7 @@ import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 export class QueryCartDto extends PartialType(
   IntersectionType(QueryDTO, PickType(Cart, createCartDTO)),
 ) {
-  @ApiPropertyEnum(createCartDTO)
+  @ApiPropertyEnum(createCartDTO, { required: false })
   @IsOptional()
   @IsString()
   @IsIn(createCartDTO)
