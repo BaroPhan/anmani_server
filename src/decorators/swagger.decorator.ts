@@ -2,7 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 
 export function ApiPropertyEmail(): PropertyDecorator {
-  return applyDecorators(ApiProperty({ default: 'name@email.com' }));
+  return applyDecorators(ApiProperty({ default: 'admin@email.com' }));
 }
 
 export function ApiPropertyURL(): PropertyDecorator {

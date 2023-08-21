@@ -12,8 +12,8 @@ import { VouchersService } from './vouchers.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { QueryUserDto } from 'src/users/dto/query-user.dto';
 import { IsPublic } from 'src/decorators/isPublic.decorator';
+import { QueryVoucherDto } from './dto/query-voucher.dto';
 
 @Controller({ path: 'vouchers', version: '1' })
 @ApiTags('vouchers')
@@ -27,8 +27,8 @@ export class VouchersController {
 
   @IsPublic()
   @Get()
-  findAll(@Query() queryUserDto: QueryUserDto) {
-    return this.vouchersService.findAll(queryUserDto);
+  findAll(@Query() queryVoucherDto: QueryVoucherDto) {
+    return this.vouchersService.findAll(queryVoucherDto);
   }
 
   @IsPublic()

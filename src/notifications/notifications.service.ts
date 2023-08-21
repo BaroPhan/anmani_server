@@ -3,7 +3,7 @@ import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Notification } from './entities/notification.entity';
-import { Repository } from 'typeorm';
+import { ArrayContains, Repository } from 'typeorm';
 import { QueryNotificationDto } from './dto/query-notification.dto';
 
 @Injectable()
@@ -34,7 +34,12 @@ export class NotificationsService {
   }
 
   findByUserId(userId: string) {
-    return this.notificationRepository.findBy({ userId });
+    return this.notificationRepository.find({
+      where: [
+        { users: ArrayContains([userId]) },
+        { productIds: ArrayContains([]) },
+      ],
+    });
   }
 
   update(id: string, updateNotificationDto: UpdateNotificationDto) {

@@ -1,20 +1,33 @@
-import { Expose } from 'class-transformer';
-import { User } from 'src/users/entities/user.entity';
+import { Exclude, Expose } from 'class-transformer';
 import {
+  AfterLoad,
   BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
+  In,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, IsUUID, IsUrl } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ArrayUnique,
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
 import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
+import { Product } from 'src/products/entities/product.entity';
+import { Cart, Status } from 'src/carts/entities/cart.entity';
 
 enum Type {
   UPDATE = 'update',
@@ -50,16 +63,26 @@ export class Notification extends BaseEntity {
   @IsString()
   content: string;
 
-  @Column({ type: String })
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsUUID()
-  @IsExist(User)
-  userId: string;
+  @Column({ type: 'uuid', array: true, nullable: true })
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  users: string[];
 
-  @ManyToOne(() => User, { eager: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
-  user: User;
+  @Column({ type: 'uuid', nullable: true, array: true })
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Exclude({ toPlainOnly: true })
+  @IsExist(Product)
+  productIds: string[];
+
+  @ManyToMany(() => Product, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinTable()
+  products: Product[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -69,12 +92,32 @@ export class Notification extends BaseEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async loadUsers(): Promise<void> {
+    if (this.productIds && this.productIds.length > 0) {
+      const carts = await Cart.findBy({
+        productId: In(this.productIds),
+        status: In([Status.PROCESSING, Status.COMPLETED]),
+      });
+      this.users = [...new Set(carts.map(({ userId }: Cart) => userId))];
+    }
+  }
+
+  @AfterLoad()
+  async loadProducts(): Promise<void> {
+    if (this.productIds && this.productIds.length > 0) {
+      this.products = await Product.findBy({ id: In(this.productIds) });
+    }
+  }
 }
 
+export const queryNotificationDTO = ['type', 'title'] as const;
+
 export const createNotificationDTO = [
-  'type',
+  ...queryNotificationDTO,
   'avatar',
-  'title',
   'content',
-  'userId',
+  'productIds',
 ] as const;

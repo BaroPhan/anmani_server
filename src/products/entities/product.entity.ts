@@ -12,11 +12,11 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
-  IsDateString,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   IsUrl,
   ValidateNested,
@@ -95,11 +95,12 @@ class Policy {
 class DescriptionDelivery {
   @ApiProperty()
   @IsNotEmpty()
-  @IsDateString()
+  @IsString()
   date: Date;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   info: string;
 }
 class Description {
@@ -173,9 +174,9 @@ class Image {
   @IsUrl()
   thumbnail: string;
 
-  @ApiPropertyURL()
+  @ApiPropertyURLArray()
   @IsNotEmpty()
-  @IsUrl()
+  @IsUrlArray()
   main: string[];
 
   @ApiPropertyURLArray()
@@ -223,12 +224,14 @@ export class Product extends BaseEntity {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
+  @IsPositive()
   price: number;
 
   @Column('bigint')
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
+  @IsPositive()
   originalPrice: number;
 
   @Column({ type: 'json' })
@@ -288,18 +291,22 @@ export class Product extends BaseEntity {
   deletedAt: Date;
 }
 
-export const createProductDTO = [
+export const queryProductDTO = [
   'type',
   'tag',
-  'investor',
   'name',
+  'view',
+  'status',
+] as const;
+
+export const createProductDTO = [
+  ...queryProductDTO,
+  'investor',
   'price',
   'originalPrice',
   'information',
   'policy',
   'description',
   'location',
-  'view',
   'image',
-  'status',
 ] as const;

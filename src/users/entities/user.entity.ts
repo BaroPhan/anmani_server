@@ -59,7 +59,7 @@ export class User extends BaseEntity {
 
   @Column({ type: String })
   @Exclude({ toPlainOnly: true })
-  @ApiProperty()
+  @ApiProperty({ default: 'admin' })
   @IsNotEmpty()
   @IsString()
   password: string;

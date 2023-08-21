@@ -1,29 +1,48 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import {
-  AfterLoad,
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  In,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  ArrayNotEmpty,
-  ArrayUnique,
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
+  ValidateNested,
 } from 'class-validator';
-import { IsExist } from 'src/decorators/isExist.decorator';
-import { ApiPropertyURL } from 'src/decorators/swagger.decorator';
+import {
+  ApiPropertyEnum,
+  ApiPropertyURL,
+} from 'src/decorators/swagger.decorator';
 
+enum VideoType {
+  VIDEO = 'video',
+  IMAGE = 'image',
+}
+class Stories {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  title: string;
+
+  @ApiPropertyURL()
+  @IsNotEmpty()
+  @IsUrl()
+  url: string;
+
+  @ApiPropertyEnum(VideoType)
+  @IsNotEmpty()
+  @IsEnum(VideoType)
+  type: string;
+}
 @Entity()
 export class Video extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -43,25 +62,11 @@ export class Video extends BaseEntity {
   url: string;
 
   @Column({ type: 'json', nullable: true })
-  @ApiPropertyOptional()
-  @Exclude({ toClassOnly: true })
-  @IsOptional()
+  @ApiProperty({ type: Stories, isArray: true })
   @IsArray()
-  @ArrayNotEmpty()
-  @ArrayUnique()
-  @IsExist(Video)
-  stories: string[];
-
-  @OneToMany(() => Video, (video) => video.stories)
-  @Expose({ name: 'stories' })
-  children: Video[];
-
-  @AfterLoad()
-  async loadChildren(): Promise<void> {
-    if (this.stories && this.stories.length > 0) {
-      this.children = await Video.findBy({ id: In(this.stories) });
-    }
-  }
+  @ValidateNested({ each: true })
+  @Type(() => Stories)
+  stories: Stories[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -16,7 +16,7 @@ import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
 import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 
-enum Status {
+export enum Status {
   PENDING = 'pending',
   PROCESSING = 'processing',
   COMPLETED = 'completed',

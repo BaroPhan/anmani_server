@@ -39,8 +39,9 @@ export class CartsService {
     return this.cartRepository.findBy({ productId });
   }
 
-  update(id: string, updateCartDto: UpdateCartDto) {
-    return this.cartRepository.update(id, updateCartDto);
+  update(updateCartDto: UpdateCartDto) {
+    const { userId, productId, ...data } = updateCartDto;
+    return this.cartRepository.update({ userId, productId }, data);
   }
 
   remove(id: string) {

@@ -3,16 +3,16 @@ import { QueryDTO } from 'src/utils/helper.utils';
 import { IsIn, IsOptional, IsString } from 'class-validator';
 import {
   Notification,
-  createNotificationDTO,
+  queryNotificationDTO,
 } from '../entities/notification.entity';
 import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 
 export class QueryNotificationDto extends PartialType(
-  IntersectionType(QueryDTO, PickType(Notification, createNotificationDTO)),
+  IntersectionType(QueryDTO, PickType(Notification, queryNotificationDTO)),
 ) {
-  @ApiPropertyEnum(createNotificationDTO, { required: false })
+  @ApiPropertyEnum(queryNotificationDTO, { required: false })
   @IsOptional()
   @IsString()
-  @IsIn(createNotificationDTO)
+  @IsIn(queryNotificationDTO)
   sort: string;
 }

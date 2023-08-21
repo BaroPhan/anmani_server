@@ -44,9 +44,9 @@ export class CartsController {
     return this.cartsService.findByProductId(productId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
-    return this.cartsService.update(id, updateCartDto);
+  @Patch()
+  update(@Body() updateCartDto: UpdateCartDto) {
+    return this.cartsService.update(updateCartDto);
   }
 
   @Delete(':id')

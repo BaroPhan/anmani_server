@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsPositive, IsString } from 'class-validator';
 import { Product } from 'src/products/entities/product.entity';
 import {
   BaseEntity,
@@ -27,6 +27,7 @@ export class Voucher extends BaseEntity {
   @Expose({ name: 'key' })
   id: string;
 
+  @Column({ type: 'uuid' })
   @ApiProperty()
   @IsNotEmpty()
   @IsExist(Product)
@@ -51,10 +52,11 @@ export class Voucher extends BaseEntity {
   @IsEnum(Option)
   option: string;
 
-  @Column({ type: Number, nullable: true })
+  @Column({ type: 'bigint', nullable: true })
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
+  @IsPositive()
   amount: number;
 
   @Column({ type: Number, nullable: true })

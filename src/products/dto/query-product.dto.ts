@@ -1,16 +1,15 @@
 import { IntersectionType, PartialType, PickType } from '@nestjs/swagger';
 import { QueryDTO } from 'src/utils/helper.utils';
 import { IsIn, IsOptional, IsString } from 'class-validator';
-import { Product, createProductDTO } from '../entities/product.entity';
+import { Product, queryProductDTO } from '../entities/product.entity';
 import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 
-export class QueryProductDto extends IntersectionType(
-  QueryDTO,
-  PartialType(PickType(Product, createProductDTO)),
+export class QueryProductDto extends PartialType(
+  IntersectionType(QueryDTO, PickType(Product, queryProductDTO)),
 ) {
-  @ApiPropertyEnum(createProductDTO, { required: false })
+  @ApiPropertyEnum(queryProductDTO, { required: false })
   @IsOptional()
   @IsString()
-  @IsIn(createProductDTO)
+  @IsIn(queryProductDTO)
   sort: string;
 }
