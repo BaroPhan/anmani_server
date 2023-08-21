@@ -21,7 +21,7 @@ async function bootstrap() {
   app.setGlobalPrefix(API_PREFIX, { exclude: ['/'] });
   app.enableVersioning({ type: VersioningType.URI });
   app.enableCors({
-    origin: ['http://localhost:3000', '*'],
+    origin: ['http://localhost:3000'],
     credentials: true,
   });
 
