@@ -6,6 +6,7 @@ import {
   Get,
   Request,
   Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/auth-register';
@@ -36,7 +37,7 @@ export class AuthController {
   @Post('logout')
   async logout(@Res() response: Response) {
     response.clearCookie('token');
-    response.status(200).send({ message: 'Logged out successfully' });
+    response.status(HttpStatus.OK).send({ message: 'Logged out successfully' });
   }
 
   @Get('me')

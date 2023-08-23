@@ -16,6 +16,6 @@ export class RolesSeedService {
       name: In(seedData.map(({ name }) => name)),
     });
     if (roles !== seedData.length)
-      await this.roleRepository.upsert(seedData, ['id', 'url']);
+      await this.roleRepository.upsert(seedData, ['id']);
   }
 }

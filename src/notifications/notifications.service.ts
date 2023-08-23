@@ -30,7 +30,7 @@ export class NotificationsService {
   }
 
   findOne(id: string) {
-    return this.notificationRepository.findOne({ where: { id } });
+    return this.notificationRepository.findOneByOrFail({ id });
   }
 
   findByUserId(userId: string) {

@@ -14,6 +14,8 @@ export class AuthVariables {
   @IsNotEmpty()
   @IsString()
   JWT_EXPIRES_IN: string;
+
+  constructor(readonly JWT_TOKEN = 'token') {}
 }
 
 class AuthConfig extends BaseEnvironmentConfig<AuthVariables> {

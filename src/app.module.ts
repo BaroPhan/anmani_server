@@ -15,9 +15,11 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { LikesModule } from './likes/likes.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/role.guards';
 import { JwtAuthGuard } from './guards/jwt.guards';
+import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { GlobalExceptionFilter } from './filter/global.filter';
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { JwtAuthGuard } from './guards/jwt.guards';
   controllers: [AppController],
   providers: [
     AppService,
+    ResponseInterceptor,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
@@ -46,6 +49,10 @@ import { JwtAuthGuard } from './guards/jwt.guards';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
     },
   ],
 })

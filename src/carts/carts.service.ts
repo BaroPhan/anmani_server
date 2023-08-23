@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { UpdateCartDto, UpdateManyCartsDto } from './dto/update-cart.dto';
 import { Cart } from './entities/cart.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -42,6 +42,15 @@ export class CartsService {
   update(updateCartDto: UpdateCartDto) {
     const { userId, productId, ...data } = updateCartDto;
     return this.cartRepository.update({ userId, productId }, data);
+  }
+
+  async updateMany(updateCartsDto: UpdateManyCartsDto) {
+    const { userId, products } = updateCartsDto;
+    const res = [];
+    for (const { productId, ...data } of products) {
+      res.push(await this.cartRepository.update({ userId, productId }, data));
+    }
+    return res;
   }
 
   remove(id: string) {

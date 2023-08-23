@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { QueryProductDto } from './dto/query-product.dto';
 
 @Injectable()
@@ -20,11 +20,18 @@ export class ProductsService {
   }
 
   findAll(queryProductDto: QueryProductDto) {
-    const { page, limit, sort, order, ...query } = queryProductDto;
+    const { page, limit, sort, order, price, ...query } = queryProductDto;
+    let from;
+    let to;
+    if (price) [from, to] = price.match(/\d+/g)?.map(Number);
+
     return this.productRepository.find({
       skip: (page - 1) * limit,
       take: limit,
-      where: query,
+      where: {
+        ...query,
+        ...(from && to && { price: Between(from, to) }),
+      },
       order: { [sort]: order },
     });
   }

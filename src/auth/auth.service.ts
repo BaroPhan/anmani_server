@@ -28,11 +28,10 @@ export class AuthService {
     throw new BadRequestException('Invalid user credentials!');
   }
 
-  async generateJwtToken({ id, email, role }: User) {
-    const payload = { sub: id, email, role };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+  async generateJwtToken({ id: sub, email, role }: User) {
+    const payload = { sub, email, role };
+    const access_token = await this.jwtService.signAsync(payload);
+    return { access_token };
   }
 
   getMe({ sub: id }) {

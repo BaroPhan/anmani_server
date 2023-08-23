@@ -10,6 +10,7 @@ import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import { ConfigName } from './config/config.constants';
 import * as cookieParser from 'cookie-parser';
+import { ResponseInterceptor } from './interceptors/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,13 +22,21 @@ async function bootstrap() {
   app.setGlobalPrefix(API_PREFIX, { exclude: ['/'] });
   app.enableVersioning({ type: VersioningType.URI });
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: [
+      'http://localhost:3000',
+      'http://www.anmani.vn',
+      'https://p-anmani.vercel.app',
+      'https://p-anmani-fe-git-develop-eriegin96.vercel.app',
+    ],
     credentials: true,
   });
 
   app.use(cookieParser('sercet'));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector)),
+    new ResponseInterceptor(),
+  );
   app.enableShutdownHooks();
   const options = new DocumentBuilder()
     .setTitle('API')

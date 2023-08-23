@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CartsService } from './carts.service';
 import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { UpdateCartDto, UpdateManyCartsDto } from './dto/update-cart.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { QueryCartDto } from './dto/query-cart.dto';
 
@@ -47,6 +47,11 @@ export class CartsController {
   @Patch()
   update(@Body() updateCartDto: UpdateCartDto) {
     return this.cartsService.update(updateCartDto);
+  }
+
+  @Patch('many')
+  updateMany(@Body() updateCartsDto: UpdateManyCartsDto) {
+    return this.cartsService.updateMany(updateCartsDto);
   }
 
   @Delete(':id')
