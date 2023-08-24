@@ -28,7 +28,7 @@ export class CartsService {
   }
 
   findOne(id: string) {
-    return this.cartRepository.findOne({ where: { userId: id } });
+    return this.cartRepository.findOne({ where: { id } });
   }
 
   findByUserId(userId: string) {
@@ -54,6 +54,6 @@ export class CartsService {
   }
 
   remove(id: string) {
-    return this.cartRepository.delete({ userId: id });
+    return this.cartRepository.delete({ id });
   }
 }

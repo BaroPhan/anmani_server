@@ -17,12 +17,7 @@ export class BaseEnvironmentConfig<T extends object> {
         excludeExtraneousValues: true,
       },
     );
-    const errors = validateSync(validatedConfig, {
-      skipMissingProperties: false,
-      validationError: {
-        target: false,
-      },
-    });
+    const errors = validateSync(validatedConfig);
     if (errors.length > 0) {
       throw new Error(`Invalid configuration: ${JSON.stringify(errors)}`);
     }

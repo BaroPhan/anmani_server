@@ -31,7 +31,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR,
       message = HttpStatus[HttpStatus.INTERNAL_SERVER_ERROR],
     } = exception.response || {};
-    const { error = exception.message } = exception.response;
+    const error = exception.response?.error || exception.message;
+
     switch (exception.constructor) {
       case HttpException:
         statusCode = (exception as HttpException).getStatus();

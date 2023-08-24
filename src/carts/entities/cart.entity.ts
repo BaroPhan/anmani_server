@@ -106,9 +106,9 @@ export class Cart extends BaseEntity {
   })
   phoneNumber: string;
 
-  @Column('bigint')
-  @ApiProperty()
-  @IsNotEmpty()
+  @Column({ type: 'bigint', nullable: true })
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsNumber()
   @IsPositive()
   price: number;
@@ -123,10 +123,11 @@ export class Cart extends BaseEntity {
   deletedAt: Date;
 
   @AfterLoad()
-  async loadVouchers(): Promise<void> {
+  async loadVouchersAndPrice(): Promise<void> {
     if (this.voucherIds && this.voucherIds.length > 0) {
       this.vouchers = await Voucher.findBy({ id: In(this.voucherIds) });
     }
+    if (this.price) this.price = Number(this.price);
   }
 }
 export const queryCartDto = ['userId', 'productId', 'status'] as const;

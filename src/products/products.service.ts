@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, JsonContains, Repository } from 'typeorm';
 import { QueryProductDto } from './dto/query-product.dto';
 
 @Injectable()
@@ -19,21 +19,33 @@ export class ProductsService {
     );
   }
 
-  findAll(queryProductDto: QueryProductDto) {
-    const { page, limit, sort, order, price, ...query } = queryProductDto;
-    let from;
-    let to;
+  async findAll(queryProductDto: QueryProductDto) {
+    const {
+      page,
+      limit,
+      sort,
+      order,
+      price,
+      location: locaionMain,
+      investor: investorName,
+      ...query
+    } = queryProductDto;
+    let from: number;
+    let to: number;
     if (price) [from, to] = price.match(/\d+/g)?.map(Number);
 
-    return this.productRepository.find({
+    const data = await this.productRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       where: {
         ...query,
+        ...(investorName && { investor: JsonContains({ name: investorName }) }),
+        ...(locaionMain && { location: JsonContains({ main: locaionMain }) }),
         ...(from && to && { price: Between(from, to) }),
       },
       order: { [sort]: order },
     });
+    return data;
   }
 
   findOne(id: string) {

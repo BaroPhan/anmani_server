@@ -32,16 +32,14 @@ export const GlobalResponse = ({
 export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
     const response = context.switchToHttp().getResponse<Response>();
-    return next
-      .handle()
-      .pipe(
-        map((data) =>
-          GlobalResponse({
-            statusCode: response.statusCode,
-            message: HttpStatus[response.statusCode],
-            data,
-          }),
-        ),
-      );
+    return next.handle().pipe(
+      map((data) =>
+        GlobalResponse({
+          statusCode: response.statusCode,
+          message: HttpStatus[response.statusCode],
+          data,
+        }),
+      ),
+    );
   }
 }

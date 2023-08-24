@@ -1,6 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { Expose } from 'class-transformer';
 import {
+  AfterLoad,
   BaseEntity,
   Column,
   CreateDateColumn,
@@ -15,6 +16,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   IsPositive,
   IsString,
@@ -28,6 +30,7 @@ import {
   ApiPropertyURL,
   ApiPropertyURLArray,
 } from 'src/decorators/swagger.decorator';
+import { ProductVariables } from 'src/config/configs/product.config';
 
 enum ProductType {
   SINGLE = 'single',
@@ -44,15 +47,16 @@ enum Status {
   SOLD = 'sold',
   INSTOCK = 'in-stock',
 }
+const productVariables = new ProductVariables();
 class Investor {
   @ApiProperty()
   @IsNotEmpty()
   name: string;
 
-  @ApiPropertyURL()
+  @ApiPropertyURL(productVariables.DEFAULT_INVESTOR_LOGO)
   @IsNotEmpty()
   @IsUrl()
-  logo: string;
+  logo = productVariables.DEFAULT_INVESTOR_LOGO;
 }
 class Information {
   @ApiProperty()
@@ -209,10 +213,11 @@ export class Product extends BaseEntity {
 
   @Column({ type: 'json', nullable: true })
   @ApiPropertyOptional({ type: Investor })
+  @IsObject()
   @IsOptional()
   @ValidateNested()
   @Type(() => Investor)
-  investor: object;
+  investor: Investor;
 
   @Column({ type: String })
   @ApiProperty()
@@ -220,14 +225,14 @@ export class Product extends BaseEntity {
   @IsString()
   name: string;
 
-  @Column('bigint')
+  @Column({ type: 'bigint' })
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
   price: number;
 
-  @Column('bigint')
+  @Column({ type: 'bigint' })
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
@@ -236,31 +241,35 @@ export class Product extends BaseEntity {
 
   @Column({ type: 'json' })
   @ApiProperty({ type: Information })
+  @IsObject()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Information)
-  information: object;
+  information: Information;
 
   @Column({ type: 'json' })
   @ApiProperty({ type: Policy })
+  @IsObject()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Policy)
-  policy: object;
+  policy: Policy;
 
   @Column({ type: 'json' })
   @ApiProperty({ type: Description })
+  @IsObject()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Description)
-  description: object;
+  description: Description;
 
   @Column({ type: 'json' })
   @ApiProperty({ type: Location })
+  @IsObject()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Location)
-  location: object;
+  location: Location;
 
   @Column({ type: Number, default: 0 })
   @ApiPropertyOptional()
@@ -270,16 +279,17 @@ export class Product extends BaseEntity {
 
   @Column({ type: 'json' })
   @ApiProperty({ type: Image })
+  @IsObject()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Image)
-  image: object;
+  image: Image;
 
   @Column({ type: String })
   @ApiPropertyEnum(Status)
   @IsNotEmpty()
   @IsEnum(Status)
-  status: string;
+  status: Status;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -289,6 +299,12 @@ export class Product extends BaseEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @AfterLoad()
+  async loadPrice(): Promise<void> {
+    if (this.price) this.price = Number(this.price);
+    if (this.originalPrice) this.originalPrice = Number(this.originalPrice);
+  }
 }
 
 export const queryProductDTO = [
@@ -298,6 +314,8 @@ export const queryProductDTO = [
   'view',
   'status',
 ] as const;
+
+export const sortProductDTO = [...queryProductDTO, 'price'] as const;
 
 export const createProductDTO = [
   ...queryProductDTO,
