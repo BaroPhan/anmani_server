@@ -8,10 +8,10 @@ import {
   IsOptional,
   IsString,
   IsUUID,
-  Matches,
+  // Matches
 } from 'class-validator';
 import { Role } from 'src/roles/entities/role.entity';
-import { Helper } from 'src/utils/helper.utils';
+// import { Helper } from 'src/utils/helper.utils';
 import { IsUnique } from 'src/decorators/isUnique.decorator';
 import {
   BaseEntity,
@@ -73,9 +73,10 @@ export class User extends BaseEntity {
   @Column({ type: String, unique: true, nullable: true })
   @ApiPropertyOptional()
   @IsOptional()
-  @Matches(Helper.regex.phoneNumber, {
-    message: 'phoneNumber must be a valid phone number',
-  })
+  @IsString()
+  // @Matches(Helper.regex.phoneNumber, {
+  //   message: 'phoneNumber must be a valid phone number',
+  // })
   @IsUnique(User)
   phoneNumber: string;
 

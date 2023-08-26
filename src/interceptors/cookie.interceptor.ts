@@ -29,7 +29,6 @@ export class CookieInterceptor implements NestInterceptor {
         response.cookie(JWT_TOKEN, data.access_token, {
           signed: true,
           httpOnly: true,
-          sameSite: 'strict',
         });
         return data;
       }),

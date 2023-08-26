@@ -25,13 +25,13 @@ import {
   IsPositive,
   IsString,
   IsUUID,
-  Matches,
+  // Matches,
 } from 'class-validator';
 import { IsExist } from 'src/decorators/isExist.decorator';
 import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 import { Exclude, Expose } from 'class-transformer';
 import { Voucher } from 'src/vouchers/entities/voucher.entity';
-import { Helper } from 'src/utils/helper.utils';
+// import { Helper } from 'src/utils/helper.utils';
 
 export enum Status {
   PENDING = 'pending',
@@ -101,9 +101,10 @@ export class Cart extends BaseEntity {
   @Column({ type: String, nullable: true })
   @ApiPropertyOptional()
   @IsOptional()
-  @Matches(Helper.regex.phoneNumber, {
-    message: 'phoneNumber must be a valid phone number',
-  })
+  // @Matches(Helper.regex.phoneNumber, {
+  //   message: 'phoneNumber must be a valid phone number',
+  // })
+  @IsString()
   phoneNumber: string;
 
   @Column({ type: 'bigint', nullable: true })
