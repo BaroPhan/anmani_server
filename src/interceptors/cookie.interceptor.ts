@@ -28,7 +28,7 @@ export class CookieInterceptor implements NestInterceptor {
         response.statusCode = HttpStatus.OK;
         response.cookie(JWT_TOKEN, data.access_token, {
           signed: true,
-          httpOnly: true,
+          httpOnly: false,
           sameSite: 'none',
           secure: true,
         });
