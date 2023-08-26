@@ -30,6 +30,7 @@ export class CookieInterceptor implements NestInterceptor {
           signed: true,
           httpOnly: true,
           sameSite: 'none',
+          secure: true,
         });
         return data;
       }),
