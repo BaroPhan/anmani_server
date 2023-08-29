@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLES } from 'src/decorators/isPublic.decorator';
+import { IS_PUBLIC_KEY, ROLES } from 'src/decorators/isPublic.decorator';
 
 export enum RolesEnum {
   ADMIN = 'admin',
@@ -11,6 +11,11 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) return true;
     const requiredRole = this.reflector.getAllAndOverride<RolesEnum[]>(ROLES, [
       context.getHandler(),
       context.getClass(),
