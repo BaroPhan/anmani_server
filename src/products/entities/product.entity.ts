@@ -434,4 +434,6 @@ export const createProductDTO = [
   'location',
   'image',
   'utility',
+  'discountStartDate',
+  'discountEndDate',
 ] as const;
