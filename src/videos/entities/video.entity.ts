@@ -1,7 +1,8 @@
-import { Exclude, Expose, Type } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import {
   AfterLoad,
   BaseEntity,
+  BeforeInsert,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -73,7 +74,6 @@ export class Video extends BaseEntity {
   @IsArray()
   @ArrayUnique()
   @ArrayMaxSize(2)
-  @Exclude({ toPlainOnly: true })
   @IsExist(Product)
   productIds: string[];
 
@@ -93,7 +93,16 @@ export class Video extends BaseEntity {
   async loadProducts(): Promise<void> {
     this.products = await Product.findBy({ id: In(this.productIds) });
   }
+
+  @BeforeInsert()
+  async test() {
+    console.log(this);
+  }
 }
 
 export const queryVideoDto = ['title'] as const;
-export const createVideoDTO = [...queryVideoDto, 'stories'] as const;
+export const createVideoDTO = [
+  ...queryVideoDto,
+  'stories',
+  'productIds',
+] as const;
