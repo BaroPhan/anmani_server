@@ -13,6 +13,7 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
+  IsDateString,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -21,6 +22,8 @@ import {
   IsPositive,
   IsString,
   IsUrl,
+  Max,
+  Min,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -31,11 +34,12 @@ import {
   ApiPropertyURLArray,
 } from 'src/decorators/swagger.decorator';
 import { ProductVariables } from 'src/config/configs/product.config';
+import { Voucher } from 'src/vouchers/entities/voucher.entity';
 
 enum ProductType {
   SINGLE = 'single',
   DOUBLE = 'double',
-  SHOPHOUSE = 'shopehouse',
+  SHOPHOUSE = 'shophouse',
   APARTMENT = 'apartment',
 }
 enum Tag {
@@ -172,16 +176,68 @@ class Location {
   @Type(() => LocationDetail)
   popular: LocationDetail[];
 }
+class ImageMain {
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  exterior: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  livingroom: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  bedroom: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  bathroom: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  lobby: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  restaurant: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  pool: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  meetingroom: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  entertainment: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  service: string[];
+}
 class Image {
   @ApiPropertyURL()
   @IsNotEmpty()
   @IsUrl()
   thumbnail: string;
 
-  @ApiPropertyURLArray()
-  @IsNotEmpty()
-  @IsUrlArray()
-  main: string[];
+  @ApiProperty({ type: ImageMain })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ImageMain)
+  main: ImageMain;
 
   @ApiPropertyURLArray()
   @IsNotEmpty()
@@ -192,6 +248,11 @@ class Image {
   @IsNotEmpty()
   @IsUrlArray()
   area: string[];
+
+  @ApiPropertyURLArray()
+  @IsNotEmpty()
+  @IsUrlArray()
+  investor: string[];
 }
 @Entity()
 export class Product extends BaseEntity {
@@ -275,6 +336,7 @@ export class Product extends BaseEntity {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
+  @IsPositive()
   view: number;
 
   @Column({ type: 'json' })
@@ -291,6 +353,46 @@ export class Product extends BaseEntity {
   @IsEnum(Status)
   status: Status;
 
+  @Column({ type: String, array: true })
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsArray()
+  @IsString({ each: true })
+  utility: string[];
+
+  @Column({ type: String })
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  projectName: string;
+
+  @Column({ type: Number })
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  @Min(1)
+  @Max(5)
+  star: number;
+
+  @Column({ type: Date, nullable: true })
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  discountStartDate: Date;
+
+  @Column({ type: Date, nullable: true })
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  discountEndDate: Date;
+
+  @Expose()
+  vouchers: Voucher[];
+
+  @Expose()
+  suggestions: Product[] | [];
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -304,6 +406,10 @@ export class Product extends BaseEntity {
   async loadPrice(): Promise<void> {
     if (this.price) this.price = Number(this.price);
     if (this.originalPrice) this.originalPrice = Number(this.originalPrice);
+    this.vouchers = await Voucher.findBy({
+      productType: this.type,
+      projectName: this.projectName,
+    });
   }
 }
 
@@ -313,6 +419,8 @@ export const queryProductDTO = [
   'name',
   'view',
   'status',
+  'projectName',
+  'star',
 ] as const;
 
 export const sortProductDTO = [...queryProductDTO, 'price'] as const;
@@ -327,4 +435,5 @@ export const createProductDTO = [
   'description',
   'location',
   'image',
+  'utility',
 ] as const;

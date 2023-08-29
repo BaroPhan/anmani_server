@@ -5,6 +5,7 @@ import { ConfigName } from '../config.constants';
 export class ProductVariables {
   constructor(
     readonly DEFAULT_INVESTOR_LOGO = 'https://sun-ecommerce-cdn.azureedge.net/ecommerce/service-sites/thumbnail/SunProperty/_default_upload_bucket/2438/image-thumb__2438__1000/SG_1665540218.png',
+    readonly DEFAULT_PRODUCT_SUGGESTION_LENGTH = 4,
   ) {}
 }
 

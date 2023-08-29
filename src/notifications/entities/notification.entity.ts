@@ -18,6 +18,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   ArrayUnique,
   IsArray,
+  IsDateString,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -84,6 +85,11 @@ export class Notification extends BaseEntity {
   @JoinTable()
   products: Product[];
 
+  @Column({ type: Date })
+  @ApiProperty()
+  @IsDateString()
+  expire: Date;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -118,6 +124,7 @@ export const queryNotificationDTO = ['type', 'title'] as const;
 export const createNotificationDTO = [
   ...queryNotificationDTO,
   'avatar',
+  'expire',
   'content',
   'productIds',
 ] as const;

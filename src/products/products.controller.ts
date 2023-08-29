@@ -13,10 +13,13 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { QueryProductDto } from './dto/query-product.dto';
-import { IsPublic } from 'src/decorators/isPublic.decorator';
+import { IsPublic, Roles } from 'src/decorators/isPublic.decorator';
+import { Product } from './entities/product.entity';
+import { RolesEnum } from 'src/guards/role.guards';
 
 @Controller({ path: 'products', version: '1' })
 @ApiTags('products')
+@Roles(RolesEnum.ADMIN)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -33,7 +36,7 @@ export class ProductsController {
 
   @IsPublic()
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<Product | any> {
     return this.productsService.findOne(id);
   }
 

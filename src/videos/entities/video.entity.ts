@@ -1,15 +1,19 @@
-import { Expose, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import {
+  AfterLoad,
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  In,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  ArrayMaxSize,
+  ArrayUnique,
   IsArray,
   IsEnum,
   IsNotEmpty,
@@ -22,6 +26,8 @@ import {
   ApiPropertyEnum,
   ApiPropertyURL,
 } from 'src/decorators/swagger.decorator';
+import { IsExist } from 'src/decorators/isExist.decorator';
+import { Product } from 'src/products/entities/product.entity';
 
 enum VideoType {
   VIDEO = 'video',
@@ -55,18 +61,24 @@ export class Video extends BaseEntity {
   @IsString()
   title: string;
 
-  @Column({ type: String })
-  @ApiPropertyURL()
-  @IsNotEmpty()
-  @IsUrl()
-  url: string;
-
   @Column({ type: 'json', nullable: true })
   @ApiProperty({ type: Stories, isArray: true })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => Stories)
   stories: Stories[];
+
+  @Column({ type: 'uuid', array: true })
+  @ApiProperty()
+  @IsArray()
+  @ArrayUnique()
+  @ArrayMaxSize(2)
+  @Exclude({ toPlainOnly: true })
+  @IsExist(Product)
+  productIds: string[];
+
+  @Expose()
+  products: Product[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -76,7 +88,12 @@ export class Video extends BaseEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @AfterLoad()
+  async loadProducts(): Promise<void> {
+    this.products = await Product.findBy({ id: In(this.productIds) });
+  }
 }
 
-export const queryVideoDto = ['title', 'url'] as const;
+export const queryVideoDto = ['title'] as const;
 export const createVideoDTO = [...queryVideoDto, 'stories'] as const;

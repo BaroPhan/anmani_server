@@ -1,25 +1,28 @@
 import { Expose } from 'class-transformer';
-import { IsPositive, IsString } from 'class-validator';
-import { Product } from 'src/products/entities/product.entity';
+import { IsDateString, IsPositive, IsString } from 'class-validator';
 import {
+  AfterLoad,
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
-import { IsExist } from 'src/decorators/isExist.decorator';
 import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 
 enum Option {
   AMOUNT = 'amount',
   PERCENTAGE = 'percentage',
+}
+enum ProductType {
+  SINGLE = 'single',
+  DOUBLE = 'double',
+  SHOPHOUSE = 'shophouse',
+  APARTMENT = 'apartment',
 }
 @Entity()
 export class Voucher extends BaseEntity {
@@ -27,18 +30,17 @@ export class Voucher extends BaseEntity {
   @Expose({ name: 'key' })
   id: string;
 
-  @Column({ type: 'uuid' })
+  @Column({ type: String })
+  @ApiPropertyEnum(ProductType)
+  @IsNotEmpty()
+  @IsEnum(ProductType)
+  productType: string;
+
+  @Column({ type: String })
   @ApiProperty()
   @IsNotEmpty()
-  @IsExist(Product)
-  productId: string;
-
-  @ManyToOne(() => Product, {
-    eager: true,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'productId' })
-  product: Product;
+  @IsString()
+  projectName: string;
 
   @Column({ type: String })
   @ApiProperty()
@@ -59,11 +61,16 @@ export class Voucher extends BaseEntity {
   @IsPositive()
   amount: number;
 
-  @Column({ type: Number, nullable: true })
+  @Column({ type: 'float', nullable: true })
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
   percentage: number;
+
+  @Column({ type: Date })
+  @ApiProperty()
+  @IsDateString()
+  expire: Date;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -73,12 +80,19 @@ export class Voucher extends BaseEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @AfterLoad()
+  async loadAmount(): Promise<void> {
+    if (this.amount) this.amount = Number(this.amount);
+  }
 }
 
 export const createVoucherDTO = [
-  'productId',
   'condition',
   'option',
   'amount',
   'percentage',
+  'expire',
+  'productType',
+  'projectName',
 ] as const;

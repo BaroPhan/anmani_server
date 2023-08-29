@@ -20,6 +20,7 @@ import { RolesGuard } from './guards/role.guards';
 import { JwtAuthGuard } from './guards/jwt.guards';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { GlobalExceptionFilter } from './filter/global.filter';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { GlobalExceptionFilter } from './filter/global.filter';
     LikesModule,
     BookmarksModule,
     AuthModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [
