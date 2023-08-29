@@ -336,7 +336,6 @@ export class Product extends BaseEntity {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
-  @IsPositive()
   view: number;
 
   @Column({ type: 'json' })
@@ -417,13 +416,12 @@ export const queryProductDTO = [
   'type',
   'tag',
   'name',
-  'view',
   'status',
   'projectName',
   'star',
 ] as const;
 
-export const sortProductDTO = [...queryProductDTO, 'price'] as const;
+export const sortProductDTO = [...queryProductDTO, 'price', 'view'] as const;
 
 export const createProductDTO = [
   ...queryProductDTO,
