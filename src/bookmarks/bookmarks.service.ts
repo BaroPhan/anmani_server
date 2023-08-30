@@ -41,10 +41,6 @@ export class BookmarksService {
     return this.bookmarkRepository.findBy({ productId });
   }
 
-  findByVideoId(videoId: string) {
-    return this.bookmarkRepository.findBy({ videoId });
-  }
-
   update(id: string, updateBookmarkDto: UpdateBookmarkDto) {
     return this.bookmarkRepository.update(id, updateBookmarkDto);
   }

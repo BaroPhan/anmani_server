@@ -41,12 +41,6 @@ export class BookmarksController {
   }
 
   @IsPublic()
-  @Get('video/:id')
-  findByVideoId(@Param('id') videoId: string) {
-    return this.bookmarksService.findByVideoId(videoId);
-  }
-
-  @IsPublic()
   @Get('product/:id')
   findByProductId(@Param('id') productId: string) {
     return this.bookmarksService.findByProductId(productId);

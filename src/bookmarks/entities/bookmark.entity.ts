@@ -5,7 +5,6 @@ import { IsExist } from 'src/decorators/isExist.decorator';
 import { ApiPropertyEnum } from 'src/decorators/swagger.decorator';
 import { Product } from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Video } from 'src/videos/entities/video.entity';
 import {
   AfterInsert,
   BaseEntity,
@@ -20,8 +19,9 @@ import {
 } from 'typeorm';
 
 enum Type {
-  VIDEO = 'video',
-  PRODUCT = 'product',
+  LATER = 'later',
+  BUY = 'buy',
+  RENT = 'rent',
 }
 @Entity()
 export class Bookmark extends BaseEntity {
@@ -40,23 +40,12 @@ export class Bookmark extends BaseEntity {
   @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
-  @IsExist(Video)
-  videoId: string;
-
-  @Column({ type: 'uuid', nullable: true })
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsUUID()
   @IsExist(Product)
   productId: string;
 
   @ManyToOne(() => User, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
-
-  @ManyToOne(() => Video, { eager: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'videoId' })
-  video: Video;
 
   @ManyToOne(() => Product, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'productId' })
@@ -82,7 +71,6 @@ export class Bookmark extends BaseEntity {
     const option = {
       userId: this.userId,
       ...(this.productId && { productId: this.productId }),
-      ...(this.videoId && { videoId: this.videoId }),
     };
     const bookmark = await Bookmark.find({ where: option });
     if (bookmark.length > 0) {
@@ -94,9 +82,4 @@ export class Bookmark extends BaseEntity {
   }
 }
 
-export const createBookmarkDTO = [
-  'userId',
-  'productId',
-  'videoId',
-  'type',
-] as const;
+export const createBookmarkDTO = ['userId', 'productId', 'type'] as const;
